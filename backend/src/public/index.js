@@ -4,54 +4,58 @@ server.onopen = () => console.log('Server connected.');
 server.sendEvent = (e) => server.send(JSON.stringify(e));
 
 server.onmessage = (m) => onEvent(JSON.parse(m.data));
-const onEvent = (e) => { alert(e.type) };
+const onEvent = (e) => { alert(e.type + (e.data.status ? '\n' + e.data.status : "")) };
 
 const signIn = () => {
   server.sendEvent({
     type: "SignIn",
-    data: {}
+    args: {}
   });
 }
 const signUp = () => {
   server.sendEvent({
     type: "SignUp",
-    data: {}
+    args: {
+      account: "Nick",
+      password: "1234",
+      nickname: "NickName"
+    }
   })
 }
 const newEvent = () => {
   server.sendEvent({
     type: "NewEvent",
-    data: {}
+    args: {}
   })
 }
 const addFriend = () => {
   server.sendEvent({
     type: "AddFriend",
-    data: {}
+    args: {}
   })
 }
 const invite = () => {
   server.sendEvent({
     type: "Invite",
-    data: {}
+    args: {}
   })
 }
 const getAvailableTimeSlots = () => {
   server.sendEvent({
     type: "GetAvailableTimeSlots",
-    data: {}
+    args: {}
   })
 }
 const updateAvailableTimeSlots = () => {
   server.sendEvent({
     type: "UpdateAvailableTimeSlots",
-    data: {}
+    args: {}
   })
 }
 const requestWithUnexpectedType = () => {
   server.sendEvent({
     type: "UnexpectedType",
-    data: {}
+    args: {}
   })
 }
 const requestWithoutTypes = () => {
