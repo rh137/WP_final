@@ -8,6 +8,7 @@ const onEvent = (e) => {
   let alertMsg = e.type;
   if (e.data.success !== undefined) alertMsg += "\n" + (e.data.success ? "success" : "fail");
   if (e.data.errorType) alertMsg += "\n" + e.data.errorType;
+  if (e.data.nickname) alertMsg += "\n" + e.data.nickname;
   alert(alertMsg);
 };
 
@@ -16,7 +17,10 @@ const onEvent = (e) => {
 const signIn = () => {
   server.sendEvent({
     type: "SignIn",
-    args: {}
+    args: {
+      account: "Ryan",
+      password: "1234",
+    }
   });
 }
 const signUp = () => {
