@@ -9,6 +9,7 @@ const onEvent = (e) => {
   if (e.data.success !== undefined) alertMsg += "\n" + (e.data.success ? "success" : "fail");
   if (e.data.errorType) alertMsg += "\n" + e.data.errorType;
   if (e.data.nickname) alertMsg += "\n" + e.data.nickname;
+  if (e.data.friends) alertMsg += "\n" + e.data.friends;
   alert(alertMsg);
 };
 
@@ -42,7 +43,10 @@ const newEvent = () => {
 const addFriend = () => {
   server.sendEvent({
     type: "AddFriend",
-    args: {}
+    args: {
+      adderAccount: "Ryan",
+      addedAccount: "Tina"
+    }
   })
 }
 const invite = () => {
