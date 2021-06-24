@@ -11,7 +11,7 @@ const signUp = async (args) => {
 
   let ret;
   const { account } = args;
-  await lock.acquire('key', async () => {
+  await lock.acquire('SignUpLock', async () => {
     const existingUser = await db.UserModel.findOne({ account: account })
     if (existingUser) {
       ret = userExistsResponse();
