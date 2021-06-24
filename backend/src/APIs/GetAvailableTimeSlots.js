@@ -1,4 +1,4 @@
-const GetAvailableTimeSlots = async (args) => {
+const getAvailableTimeSlots = async (args) => {
   console.log('GetAvailableTimeSlots called.');
 
   return {
@@ -7,4 +7,4 @@ const GetAvailableTimeSlots = async (args) => {
   }
 }
 
-export default GetAvailableTimeSlots;
+export default getAvailableTimeSlots;

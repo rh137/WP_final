@@ -1,4 +1,4 @@
-const AddFriend = async (args) => {
+const addFriend = async (args) => {
   console.log('AddFriend called.');
 
   return {
@@ -7,4 +7,4 @@ const AddFriend = async (args) => {
   }
 }
 
-export default AddFriend;
+export default addFriend;

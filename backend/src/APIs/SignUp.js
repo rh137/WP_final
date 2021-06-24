@@ -1,4 +1,4 @@
-const SignUp = async (args) => {
+const signUp = async (args) => {
   console.log('SignUp called.');
 
   return {
@@ -7,4 +7,4 @@ const SignUp = async (args) => {
   }
 }
 
-export default SignUp;
+export default signUp;

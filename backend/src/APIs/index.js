@@ -1,15 +1,15 @@
-import SignIn from './SignIn';
-import SignUp from "./SignUp";
-import NewEvent from "./NewEvent";
-import AddFriend from "./AddFriend";
-import Invite from "./Invite";
-import GetAvailableTimeSlots from "./GetAvailableTimeSlots";
-import UpdateAvailableTimeSlots from "./UpdateAvailableTimeSlots";
-import HandleInvalidRequestTypes from "./HandleInvalidRequestTypes";
+import signIn from './SignIn';
+import signUp from "./SignUp";
+import newEvent from "./NewEvent";
+import addFriend from "./AddFriend";
+import invite from "./Invite";
+import getAvailableTimeSlots from "./GetAvailableTimeSlots";
+import updateAvailableTimeSlots from "./UpdateAvailableTimeSlots";
+import handleInvalidRequestTypes from "./HandleInvalidRequestTypes";
 
 const apis = {
-  SignIn, SignUp, NewEvent, AddFriend, Invite,
-  UpdateAvailableTimeSlots, GetAvailableTimeSlots, HandleInvalidRequestTypes
+  signIn, signUp, newEvent, addFriend, invite,
+  updateAvailableTimeSlots, getAvailableTimeSlots, handleInvalidRequestTypes
 };
 
 export default apis

@@ -1,4 +1,4 @@
-const HandleInvalidRequestTypes = (type) => {
+const handleInvalidRequestTypes = (type) => {
   let ret;
   if (type) {
     console.log(`Invalid request type: "${type}"`)
@@ -17,4 +17,4 @@ const HandleInvalidRequestTypes = (type) => {
   return ret;
 }
 
-export default HandleInvalidRequestTypes;
+export default handleInvalidRequestTypes;

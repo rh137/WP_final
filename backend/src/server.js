@@ -13,9 +13,9 @@ const PORT = 5000;
 
 app.use(express.static("./src/public/"));
 
-const { SignUp, SignIn, NewEvent, AddFriend, Invite,
-  GetAvailableTimeSlots, UpdateAvailableTimeSlots,
-  HandleInvalidRequestTypes } = apis;
+const { signUp, signIn, newEvent, addFriend, invite,
+  getAvailableTimeSlots, updateAvailableTimeSlots,
+  handleInvalidRequestTypes } = apis;
 
 connectToMongoDB();
 
@@ -27,14 +27,14 @@ wsServer.on("connection", (client) => {
     const { type, args } = request;
     let ret;
     switch (type) {
-      case "SignIn": ret = await SignIn(args); break;
-      case "SignUp": ret = await SignUp(args); break;
-      case "NewEvent": ret = await NewEvent(args); break;
-      case "AddFriend": ret = await AddFriend(args); break;
-      case "Invite": ret = await Invite(args); break;
-      case "GetAvailableTimeSlots": ret = await GetAvailableTimeSlots(args); break;
-      case "UpdateAvailableTimeSlots": ret = await UpdateAvailableTimeSlots(args); break;
-      default: ret = HandleInvalidRequestTypes(type);
+      case "SignIn": ret = await signIn(args); break;
+      case "SignUp": ret = await signUp(args); break;
+      case "NewEvent": ret = await newEvent(args); break;
+      case "AddFriend": ret = await addFriend(args); break;
+      case "Invite": ret = await invite(args); break;
+      case "GetAvailableTimeSlots": ret = await getAvailableTimeSlots(args); break;
+      case "UpdateAvailableTimeSlots": ret = await updateAvailableTimeSlots(args); break;
+      default: ret = handleInvalidRequestTypes(type);
     }
     client.sendData(ret);
   })

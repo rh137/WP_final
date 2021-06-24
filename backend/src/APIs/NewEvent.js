@@ -1,4 +1,4 @@
-const NewEvent = async (args) => {
+const newEvent = async (args) => {
   console.log('NewEvent called.');
 
   return {
@@ -7,4 +7,4 @@ const NewEvent = async (args) => {
   }
 }
 
-export default NewEvent;
+export default newEvent;

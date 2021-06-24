@@ -1,4 +1,4 @@
-const Invite = async (args) => {
+const invite = async (args) => {
   console.log('Invite called.');
 
   return {
@@ -7,4 +7,4 @@ const Invite = async (args) => {
   }
 }
 
-export default Invite;
+export default invite;
