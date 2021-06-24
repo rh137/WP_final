@@ -2,8 +2,7 @@ import express from 'express';
 import http from 'http';
 import WebSocket from 'ws';
 
-import { connectToMongoDB } from "./db/mongo";
-import db from "./db";
+import { connectToMongoDB } from "./mongo";
 import apis from './APIs'
 
 const app = express();
