@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="valid">
+        <p>valid requests</p>
         <button onclick="signIn()">SignIn</button>
         <button onclick="signUp()">SignUp</button>
         <button onclick="addFriend()">AddFriend</button>
@@ -17,8 +18,13 @@
         <button onclick="updateAvailableTimeSlots()">UpdateAvailableTimeSlots</button>
     </div>
     <div class="invalid">
+        <p>invalid requests</p>
         <button onclick="requestWithUnexpectedType()">RequestWithUnexpectedType</button>
         <button onclick="requestWithoutTypes()">RequestWithoutTypes</button>
+    </div>
+    <div class="test">
+        <p>for testing</p>
+        <button onclick="signUpTwice()">SignUpTwice</button>
     </div>
     <script src="index.js"></script>
 </body>

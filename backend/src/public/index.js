@@ -23,7 +23,7 @@ const signUp = () => {
   server.sendEvent({
     type: "SignUp",
     args: {
-      account: "Nick",
+      account: "Ryan",
       password: "1234",
       nickname: "NickName"
     }
@@ -67,4 +67,24 @@ const requestWithUnexpectedType = () => {
 }
 const requestWithoutTypes = () => {
   server.sendEvent({})
+}
+
+const signUpTwice = () => {
+  // for async test
+  server.sendEvent({
+    type: "SignUp",
+    args: {
+      account: "TestUserForSignUpTwice",
+      password: "1234",
+      nickname: "NickName"
+    }
+  })
+  server.sendEvent({
+    type: "SignUp",
+    args: {
+      account: "TestUserForSignUpTwice",
+      password: "1234",
+      nickname: "NickName"
+    }
+  })
 }
