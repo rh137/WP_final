@@ -3,6 +3,10 @@ import db from "../db";
 const signIn = async (args) => {
   console.log('SignIn called.');
 
+  if (hasMissingFields(args)){
+    return missingFieldsResponse();
+  }
+
   const { account, password } = args;
   const existingUser = await db.UserModel.findOne({account: account})
   if (!existingUser) return accountNotExistResponse();
@@ -21,6 +25,10 @@ const signIn = async (args) => {
 }
 
 // implementation details
+const hasMissingFields = (args) => {
+  const { account, password } = args;
+  return !account || !password;
+}
 
 // responses
 const accountNotExistResponse = () => {
@@ -40,6 +48,15 @@ const wrongPasswordResponse = () => {
       errorType: "WRONG_PASSWORD"
     }
   }
+}
+const missingFieldsResponse = () => {
+  return {
+    type: "SignIn",
+    data: {
+      success: false,
+      errorType: "MISSING_FIELDS"
+    }
+  };
 }
 
 export default signIn;
