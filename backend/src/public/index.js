@@ -6,7 +6,7 @@ server.sendEvent = (e) => server.send(JSON.stringify(e));
 server.onmessage = (m) => onEvent(JSON.parse(m.data));
 const onEvent = (e) => {
   let alertMsg = e.type;
-  if (e.data.status) alertMsg += "\n" + e.data.status;
+  if (e.data.success !== undefined) alertMsg += "\n" + (e.data.success ? "success" : "fail");
   if (e.data.detail) alertMsg += "\n" + e.data.detail;
   alert(alertMsg);
 };

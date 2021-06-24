@@ -26,9 +26,9 @@ const fieldsAreMissing = (args) => {
 const missingFieldsRet = (args) => {
   const { account, password, nickname } = args;
   let ret = {
-    type: "SignIn",
+    type: "SignUp",
     data: {
-      status: "fail",
+      success: false,
       detail: "Missing field(s):"
     }
   }
@@ -40,9 +40,9 @@ const missingFieldsRet = (args) => {
 }
 const userExistsRet = () => {
   let ret = {
-    type: "SignIn",
+    type: "SignUp",
     data: {
-      status: "fail",
+      success: false,
       detail: "The account already exists."
     }
   }
@@ -50,9 +50,9 @@ const userExistsRet = () => {
 }
 const newUserRet = () => {
   let ret = {
-    type: "SignIn",
+    type: "SignUp",
     data: {
-      status: "success",
+      success: true,
       detail: ""
     }
   }
