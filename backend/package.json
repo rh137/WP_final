@@ -6,7 +6,8 @@
   "dependencies": {
     "dotenv-defaults": "^2.0.2",
     "express": "^4.17.1",
-    "mongoose": "^5.12.14"
+    "mongoose": "^5.12.14",
+    "ws": "^7.5.0"
   },
   "type": "module",
   "scripts": {
