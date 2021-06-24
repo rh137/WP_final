@@ -1,67 +1,65 @@
 import db from "../db";
+import AsyncLock from 'async-lock';
+const lock = new AsyncLock();
 
 const signUp = async (args) => {
   console.log('SignUp called.');
 
-  if (fieldsAreMissing(args)) {
-    return missingFieldsRet(args)
+  if (hasMissingFields(args)) {
+    return missingFieldsResponse();
   }
 
+  let ret;
   const { account } = args;
-  const existingUser = await db.UserModel.findOne({ account: account })
-  if (existingUser) {
-    return userExistsRet()
-  } else {
-    await addUserToDB(args);
-    return newUserRet();
-  }
+  await lock.acquire('key', async () => {
+    const existingUser = await db.UserModel.findOne({ account: account })
+    if (existingUser) {
+      ret = userExistsResponse();
+    } else {
+      await addUserToDB(args);
+      ret = successResponse();
+    }
+  });
+  return ret;
 }
 
 // implementation details
-const fieldsAreMissing = (args) => {
+const hasMissingFields = (args) => {
   const { account, password, nickname } = args;
-  if (!account || !password || !nickname) return true;
-  return false;
-}
-const missingFieldsRet = (args) => {
-  const { account, password, nickname } = args;
-  let ret = {
-    type: "SignUp",
-    data: {
-      success: false,
-      detail: "Missing field(s):"
-    }
-  }
-  if (!account) ret.data.detail += " account,";
-  if (!password) ret.data.detail += " password,";
-  if (!nickname) ret.data.detail += " nickname,";
-  ret.data.detail = ret.data.detail.substring(0, ret.data.detail.length-1) + ".";
-  return ret;
-}
-const userExistsRet = () => {
-  let ret = {
-    type: "SignUp",
-    data: {
-      success: false,
-      detail: "The account already exists."
-    }
-  }
-  return ret;
-}
-const newUserRet = () => {
-  let ret = {
-    type: "SignUp",
-    data: {
-      success: true,
-      detail: ""
-    }
-  }
-  return ret;
+  return (!account || !password || !nickname);
 }
 const addUserToDB = async (args) => {
   const { account, password, nickname } = args;
   const newUser = await new db.UserModel({account, password, nickname});
   await newUser.save();
+}
+
+// responses
+const missingFieldsResponse = () => {
+  return {
+    type: "SignUp",
+    data: {
+      success: false,
+      errorType: "MISSING_FIELDS"
+    }
+  };
+}
+const userExistsResponse = () => {
+  return {
+    type: "SignUp",
+    data: {
+      success: false,
+      errorType: "ACCOUNT_EXISTS"
+    }
+  };
+}
+const successResponse = () => {
+  return {
+    type: "SignUp",
+    data: {
+      success: true
+    }
+  };
 }
 
 export default signUp;
