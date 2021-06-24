@@ -1,9 +1,10 @@
 const server = new WebSocket('ws://localhost:5000');
 server.onopen = () => console.log('Server connected.');
-//server.onmessage = (m) => onEvent(JSON.parse(m.data));
+
 server.sendEvent = (e) => server.send(JSON.stringify(e));
 
-//const onEvent = (e) => {};
+server.onmessage = (m) => onEvent(JSON.parse(m.data));
+const onEvent = (e) => { alert(e.type) };
 
 const SignIn = () => {
   server.sendEvent({
@@ -46,4 +47,13 @@ const UpdateAvailableTimeSlots = () => {
     type: "UpdateAvailableTimeSlots",
     data: {}
   })
+}
+const RequestWithUnexpectedType = () => {
+  server.sendEvent({
+    type: "UnexpectedType",
+    data: {}
+  })
+}
+const RequestWithoutTypes = () => {
+  server.sendEvent({})
 }

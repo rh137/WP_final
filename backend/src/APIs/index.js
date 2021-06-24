@@ -5,10 +5,11 @@ import AddFriend from "./AddFriend";
 import Invite from "./Invite";
 import GetAvailableTimeSlots from "./GetAvailableTimeSlots";
 import UpdateAvailableTimeSlots from "./UpdateAvailableTimeSlots";
+import HandleInvalidRequestTypes from "./HandleInvalidRequestTypes";
 
 const apis = {
   SignIn, SignUp, NewEvent, AddFriend, Invite,
-  UpdateAvailableTimeSlots, GetAvailableTimeSlots
+  UpdateAvailableTimeSlots, GetAvailableTimeSlots, HandleInvalidRequestTypes
 };
 
 export default apis
