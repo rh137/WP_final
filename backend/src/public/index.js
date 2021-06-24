@@ -4,7 +4,14 @@ server.onopen = () => console.log('Server connected.');
 server.sendEvent = (e) => server.send(JSON.stringify(e));
 
 server.onmessage = (m) => onEvent(JSON.parse(m.data));
-const onEvent = (e) => { alert(e.type + (e.data.status ? '\n' + e.data.status : "")) };
+const onEvent = (e) => {
+  let alertMsg = e.type;
+  if (e.data.status) alertMsg += "\n" + e.data.status;
+  if (e.data.detail) alertMsg += "\n" + e.data.detail;
+  alert(alertMsg);
+};
+
+
 
 const signIn = () => {
   server.sendEvent({
