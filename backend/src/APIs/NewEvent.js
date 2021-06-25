@@ -15,7 +15,7 @@ const newEvent = async (args) => {
     participants, launcher
   } = args
 
-  if (!await allAccountExist(participants) || !await accountExists(launcher.account)) {
+  if (!await allUsersExist(participants) || !await userExists(launcher)) {
     return accountNotExistResponse("NewEvent");
   }
 
@@ -24,7 +24,7 @@ const newEvent = async (args) => {
   else if (isInvalidTime(startTime)) return invalidStartTimeResponse();
   else if (isInvalidTime(endTime)) return invalidEndTimeResponse();
 
-  const participantIds = await getUserIdsFromAccounts(participants)
+  const participantIds = await getUserIds(participants)
   // add validated event to db
   const theNewEvent = await new db.EventModel({
     title: title,
@@ -62,16 +62,16 @@ const hasMissingFields = (args) => {
     !participants || !launcher
   );
 }
-const allAccountExist = async (participants) => {
-  for (const { account } of participants) {
-    if (!await accountExists(account)) {
+const allUsersExist = async (users) => {
+  for (const user of users) {
+    if (!await userExists(user)) {
       return false;
     }
   }
   return true
 }
-const accountExists = async (account) => {
-  const existingUser = await db.UserModel.findOne({account: account});
+const userExists = async (user) => {
+  const existingUser = await db.UserModel.findOne({account: user.account});
   if (existingUser) return true;
   return false;
 }
@@ -89,9 +89,9 @@ const getUserIdFromAccount = async (account) => {
   const user = await db.UserModel.findOne({account: account});
   return user._id;
 }
-const getUserIdsFromAccounts = async (objs) => {
+const getUserIds = async (users) => {
   return Promise.all(
-    objs.map(async ({ account }) => (
+    users.map(async ({ account }) => (
       await getUserIdFromAccount(account)
     ))
   )
