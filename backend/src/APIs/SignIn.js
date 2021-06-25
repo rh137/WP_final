@@ -54,7 +54,14 @@ const getEventObjectsByIds = async (eventIds) => {
     eventIds.map(
       async (eventId) => {
         const event = await db.EventModel.findById(eventId);
-        return event;
+        // ref: https://mongoosejs.com/docs/populate.html#query-conditions
+        return event
+          .populate({
+            path: 'participants',
+            select: 'nickname account -_id'
+          })  // equivalent to: .populate('participants', 'nickname account -_id')
+          .populate('launcher', 'nickname account -_id')
+          .execPopulate();
       }
     )
   );
