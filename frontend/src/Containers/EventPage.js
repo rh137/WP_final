@@ -21,7 +21,7 @@ const EventPage = ({setEventCreated}) => {
     const turnEditMode = () => setEditMode(true);
     const turnViewMode = () => setEditMode(false);
 
-    const [schedule, setSchedule] = useState([]);
+    const [schedule, setSchedule] = useState([]);             //useState([Date])
     const handleChange = newSchedule => {
       setSchedule(newSchedule);
     }
@@ -29,7 +29,6 @@ const EventPage = ({setEventCreated}) => {
     return(
       <Layout className="App-homepage" style={{ minHeight: '100vh' }}>
       <Sider 
-        collapsible
         style={{
           overflow: 'auto',
           position: 'fixed',
@@ -118,7 +117,7 @@ const EventPage = ({setEventCreated}) => {
           
           <ScheduleSelector
             selection={schedule}
-            numDays={5}
+            //numDays={5}
             minTime={8}
             maxTime={20}
             hourlyChunks={2}

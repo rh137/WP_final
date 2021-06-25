@@ -1,35 +1,66 @@
 import './App.css';
-import {useState} from "react";
+import {useState, useEffect} from "react";
+import { message } from 'antd';
 import SignIn from "./Containers/SignIn";
 import Homepage from "./Containers/Homepage";
 
+const server = new WebSocket('ws://localhost:5000');
+
 function App() {
   const [signedIn, setSignedIn] = useState(false);
-  const [account, setAccount] = useState("");             //account for identification
+  const [account, setAccount] = useState("");             
   const [password, setPassword] = useState("");
-  const [userInfo, setUserInfo] = useState([]);
+  const [nickname, setNickname] = useState("");
+  const [friends, setFriends] = useState([]);
+  const [events, setEvents] = useState([]);
 
-  //console.log(userInfo)
+  const displayStatus = (payload) => {
+    if (payload.msg) {
+      const { type, msg } = payload
+      const content = {
+        content: msg, duration: 0.5 }
+      switch (type) {
+        case 'success':
+          message.success(content)
+          break
+        case 'error':
+        default:
+          message.error(content)
+          break
+  }}}
+  /*
+  useEffect(() => {
+    displayStatus(status)}, [status]);
+
+  */
+  server.onopen = () => console.log('Server connected.');
 
   return (
     <div className="App">
       {signedIn ? (
         <Homepage
-                //nickname={nickname}
-                account={account}
-                password={password}
-                //setFriendList={setFriendList}
-                //setEventList={setEventList}
-                userInfo={userInfo}
+          account={account}
+          nickname={nickname}   
+          friends={friends}
+          events={events}
+          setFriends={setFriends}
+          setEvents={setEvents}
+          server={server}
+          displayStatus={displayStatus}
+
         />
       ):(
         <SignIn       
-                account={account} 
-                password={password} 
-                setSignedIn={setSignedIn}
-                setAccount={setAccount} 
-                setPassword={setPassword} 
-                setUserInfo={setUserInfo}
+          account={account} 
+          password={password} 
+          setSignedIn={setSignedIn}
+          setAccount={setAccount} 
+          setPassword={setPassword}
+          setNickname={setNickname}
+          setFriends={setFriends}
+          setEvents={setEvents}
+          server={server}
+          displayStatus={displayStatus}
         />
       )}
     </div>

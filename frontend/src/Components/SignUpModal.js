@@ -29,7 +29,7 @@ const SignUpModal = ({visible, onCreate, onCancel}) => {
             name="account" label="帳號："
             rules={[{
               required: true,
-              message: "Error: Please enter Account Number!",
+              message: "Error: Please enter Account!",
             },]}
           >
             <Input />

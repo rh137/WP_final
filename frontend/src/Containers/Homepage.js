@@ -5,15 +5,13 @@ import "../App.css";
 import EventPage from "./EventPage";
 import NewEventModal from "../Components/NewEventModal";
 import AddFriendModal from "../Components/AddFriendModal";
-import useEvent from '../hooks/useEvent';
-import useUser from "../hooks/useUser";
+//import useEvent from '../hooks/useEvent';
 
 const {Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
-const Homepage = ({account, password, userInfo}) => {
-    //const {userInfo, signIn} = useUser();
-    const {eventInfo, newEvent} = useEvent();
+const Homepage = ({account, nickname, friends, events, setFriends, setEvents, server, displayStatus}) => {
+    //const {eventInfo, newEvent} = useEvent();
     const [eventCreated, setEventCreated] = useState(false);
     const [eventModalVisible, setEventModalVisible] = useState(false);      
     const [friendModalVisible, setFriendModalVisible] = useState(false);      
@@ -47,7 +45,7 @@ const Homepage = ({account, password, userInfo}) => {
                             style={{ height: '100%', borderRight: 0, fontSize: "20px"}}
                         >
 
-                            <Menu.Item key="Title" style={{cursor: "default"}}><h1>{userInfo.nickname}'s when2meet</h1></Menu.Item>
+                            <Menu.Item key="Title" style={{cursor: "default"}}><h1>{nickname}'s when2meet</h1></Menu.Item>
                             
                             <SubMenu key="Information" icon={<UserOutlined />} title="個人資訊">
                                 <Menu.Item key="8">XXXX</Menu.Item>
@@ -69,16 +67,23 @@ const Homepage = ({account, password, userInfo}) => {
                     <NewEventModal
                         visible={eventModalVisible}
                         onCreate={(value) => {
-                            console.log(value)
+                            //console.log(value)
+                            console.log(value.date_range[0].format('MM/DD'), 
+                            value.date_range[1].format('MM/DD'), 
+                            parseFloat(value.time_range[0].format('HH.mm')),
+                            parseFloat(value.time_range[1].format('HH.mm'))
+                            );
                             //use hook to send eventInfo to backend
+                            /*
                             newEvent(account, 
                                     value.title, 
                                     value.description, 
-                                    value.date_range[0].format('MM-DD'), 
-                                    value.date_range[1].format('MM-DD'), 
-                                    value.time_range[0].format('HH:mm'),
-                                    value.time_range[1].format('HH:mm'), 
+                                    value.date_range[0].format('MM/DD'), 
+                                    value.date_range[1].format('MM/DD'), 
+                                    value.time_range[0].format('HH.mm'),
+                                    value.time_range[1].format('HH.mm'), 
                                     value.participant);
+                            */
                             setEventModalVisible(false);
                             setEventCreated(true);
                         }}
