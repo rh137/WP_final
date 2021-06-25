@@ -1,4 +1,7 @@
 import db from "../db";
+import responses from "./commonFailedResponses";
+const { missingFieldsResponse, accountExistsResponse } = responses;
+
 import AsyncLock from 'async-lock';
 const lock = new AsyncLock();
 
@@ -6,7 +9,7 @@ const signUp = async (args) => {
   console.log('SignUp called.');
 
   if (hasMissingFields(args)) {
-    return missingFieldsResponse();
+    return missingFieldsResponse("SignUp");
   }
 
   let ret;
@@ -14,10 +17,10 @@ const signUp = async (args) => {
   await lock.acquire('SignUpLock', async () => {
     const existingUser = await db.UserModel.findOne({ account: account })
     if (existingUser) {
-      ret = userExistsResponse();
+      ret = accountExistsResponse("SignUp");
     } else {
       await addUserToDB(args);
-      ret = successResponse();
+      ret = signUpSuccessResponse();
     }
   });
   return ret;
@@ -35,25 +38,7 @@ const addUserToDB = async (args) => {
 }
 
 // responses
-const missingFieldsResponse = () => {
-  return {
-    type: "SignUp",
-    data: {
-      success: false,
-      errorType: "MISSING_FIELDS"
-    }
-  };
-}
-const userExistsResponse = () => {
-  return {
-    type: "SignUp",
-    data: {
-      success: false,
-      errorType: "ACCOUNT_EXISTS"
-    }
-  };
-}
-const successResponse = () => {
+const signUpSuccessResponse = () => {
   return {
     type: "SignUp",
     data: {

@@ -1,4 +1,7 @@
 import db from "../db";
+import responses from "./commonFailedResponses";
+const { missingFieldsResponse, accountNotExistResponse } = responses
+
 import AsyncLock from 'async-lock';
 const lock = new AsyncLock();
 
@@ -6,7 +9,7 @@ const addFriend = async (args) => {
   console.log('AddFriend called.');
 
   if (hasMissingFields(args)) {
-    return missingFieldsResponse();
+    return missingFieldsResponse("AddFriend");
   }
 
   const { adderAccount, addedAccount } = args
@@ -15,8 +18,9 @@ const addFriend = async (args) => {
     const adder = await db.UserModel.findOne({account: adderAccount});
     const addedUser = await db.UserModel.findOne({account: addedAccount});
     if (!adder || !addedUser) {
-      ret = accountNotExistResponse();
+      ret = accountNotExistResponse("AddFriend");
     } else if (adder.friends.includes(addedUser._id)) {
+      // TODO: check bi-directional relationship ?
       ret = alreadyFriendsResponse();
     } else {
       adder.friends.push(addedUser);
@@ -36,24 +40,6 @@ const hasMissingFields = (args) => {
 }
 
 // responses
-const missingFieldsResponse = () => {
-  return {
-    type: "AddFriend",
-    data: {
-      success: false,
-      errorType: "MISSING_FIELDS"
-    }
-  };
-}
-const accountNotExistResponse = () => {
-  return {
-    type: "AddFriend",
-    data: {
-      success: false,
-      errorType: "ACCOUNT_NOT_EXIST"
-    }
-  }
-}
 const alreadyFriendsResponse = () => {
   return {
     type: "AddFriend",

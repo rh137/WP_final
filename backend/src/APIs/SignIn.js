@@ -1,16 +1,21 @@
 import db from "../db";
+import responses from "./commonFailedResponses";
+const { missingFieldsResponse, accountNotExistResponse } = responses;
 
 const signIn = async (args) => {
   console.log('SignIn called.');
 
   if (hasMissingFields(args)){
-    return missingFieldsResponse();
+    return missingFieldsResponse("SignIn");
   }
 
   const { account, password } = args;
   const existingUser = await db.UserModel.findOne({account: account})
-  if (!existingUser) return accountNotExistResponse();
-  else if (existingUser.password !== password) return wrongPasswordResponse();
+  if (!existingUser) {
+    return accountNotExistResponse("SignIn");
+  } else if (existingUser.password !== password) {
+    return wrongPasswordResponse();
+  }
 
   const { nickname, friends, events } = existingUser;
   return {
@@ -29,17 +34,16 @@ const hasMissingFields = (args) => {
   const { account, password } = args;
   return !account || !password;
 }
+const parseFriends = (friends) => {
+  // TODO: from _id to objects
+  return friends;
+}
+const parseEvents = (events) => {
+  // TODO: from _id to objects
+  return events;
+}
 
 // responses
-const accountNotExistResponse = () => {
-  return {
-    type: "SignIn",
-    data: {
-      success: false,
-      errorType: "ACCOUNT_NOT_EXIST"
-    }
-  }
-}
 const wrongPasswordResponse = () => {
   return {
     type: "SignIn",
@@ -48,15 +52,6 @@ const wrongPasswordResponse = () => {
       errorType: "WRONG_PASSWORD"
     }
   }
-}
-const missingFieldsResponse = () => {
-  return {
-    type: "SignIn",
-    data: {
-      success: false,
-      errorType: "MISSING_FIELDS"
-    }
-  };
 }
 
 export default signIn;
