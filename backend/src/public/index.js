@@ -10,6 +10,12 @@ const onEvent = (e) => {
   if (e.data.errorType) alertMsg += "\n" + e.data.errorType;
   if (e.data.nickname) alertMsg += "\n" + e.data.nickname;
   if (e.data.friends) alertMsg += "\n" + e.data.friends;
+  if (e.data.friends) {
+    console.log(e.data.friends);
+  }
+  if (e.data.events) {
+    console.log(e.data.events);
+  }
   alert(alertMsg);
 };
 
@@ -28,16 +34,47 @@ const signUp = () => {
   server.sendEvent({
     type: "SignUp",
     args: {
+      account: "Nick",
+      password: "1234",
+      nickname: "nick"
+    }
+  })
+  server.sendEvent({
+    type: "SignUp",
+    args: {
       account: "Ryan",
       password: "1234",
-      nickname: "NickName"
+      nickname: "ryan"
+    }
+  })
+  server.sendEvent({
+    type: "SignUp",
+    args: {
+      account: "Tina",
+      password: "1234",
+      nickname: "tina"
     }
   })
 }
 const newEvent = () => {
   server.sendEvent({
     type: "NewEvent",
-    args: {}
+    args: {
+      title: "test title",
+      description: "test desc",
+      startDate: new Date(),
+      endDate: new Date(),
+      startTime: 7.5,
+      endTime: 21,
+      participants: [
+        { account: "Ryan" },
+        { account: "Nick" },
+        { account: "Tina" },
+      ],
+      launcher: {
+        account: "Ryan"
+      }
+    }
   })
 }
 const addFriend = () => {
@@ -45,7 +82,7 @@ const addFriend = () => {
     type: "AddFriend",
     args: {
       adderAccount: "Ryan",
-      addedAccount: "Tina"
+      addedAccount: "Nick"
     }
   })
 }
@@ -132,5 +169,10 @@ const addFriendTwice = () => {
 const clearUser = () => {
   server.sendEvent({
     type: "ClearUser"
+  })
+}
+const clearEvent = () => {
+  server.sendEvent({
+    type: "ClearEvent"
   })
 }
