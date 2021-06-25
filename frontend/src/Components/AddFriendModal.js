@@ -1,9 +1,11 @@
-import { Modal, Form, Select } from "antd";
+import { Modal, Form, Select, Input } from "antd";
+import { UsergroupAddOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
 const AddFriendModal = ({visible, onCreate, onCancel}) => {
     const [form] = Form.useForm();
+
     return (
       <Modal
         visible={visible}
@@ -21,7 +23,7 @@ const AddFriendModal = ({visible, onCreate, onCancel}) => {
           name="form_in_modal">
 
           <Form.Item
-            name="invitation" label="加入朋友："
+            name="friend" label="加入朋友："
             rules={[{
               required: true,
               message: "Error: 請至少選擇一個人!",
@@ -36,25 +38,33 @@ const AddFriendModal = ({visible, onCreate, onCancel}) => {
             >
               <Option value="friendA" >
                 <div className="demo-option-label-item">
-                  friend1
+                  friendA
                 </div>
               </Option>
               <Option value="friendB" >
                 <div className="demo-option-label-item">
-                  friend2
+                  friendB
                 </div>
               </Option>
               <Option value="friendC">
                 <div className="demo-option-label-item">
-                  friend3
+                  friendC
                 </div>
               </Option>
               <Option value="friendD">
                 <div className="demo-option-label-item">
-                  friend4
+                  friendD
                 </div>
               </Option>
             </Select>
+          </Form.Item>
+
+          <Form.Item>
+            <Input 
+              placeholder="enter friend's account" 
+              prefix={<UsergroupAddOutlined/>} 
+              style={{width: "100%"}} 
+            />
           </Form.Item>
 
         </Form>

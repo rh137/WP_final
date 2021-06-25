@@ -5,17 +5,25 @@ import "../App.css";
 import EventPage from "./EventPage";
 import NewEventModal from "../Components/NewEventModal";
 import AddFriendModal from "../Components/AddFriendModal";
-//import useEvent from '../hooks/useEvent';
+import { setDate } from "date-fns";
+
 
 const {Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
 const Homepage = ({account, nickname, friends, events, setFriends, setEvents, server, displayStatus}) => {
-    //const {eventInfo, newEvent} = useEvent();
     const [eventCreated, setEventCreated] = useState(false);
     const [eventModalVisible, setEventModalVisible] = useState(false);      
     const [friendModalVisible, setFriendModalVisible] = useState(false);      
     
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+    const [startTime, setStartTime] = useState();
+    const [endTime, setEndTime] = useState();
+    
+
+
+
     const addEvent = () => setEventModalVisible(true);
     const addFriend = () => setFriendModalVisible(true);
 
@@ -24,6 +32,10 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
             {eventCreated ? (
                 <EventPage 
                     setEventCreated={setEventCreated}
+                    startDate={startDate}
+                    endDate={endDate}
+                    startTime={startTime}
+                    endTime={endTime}
                 />
             ):(
                 <Layout className="App-homepage" >
@@ -35,29 +47,25 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         position: 'fixed',
                         left: 0,
                         backgroundColor: "white",
-                        padding: "1vh"
-                    }}> 
-                        
+                        padding: "1vh"}}
+                    > 
                         <Menu
                             mode="inline"
-                            //defaultSelectedKeys={['1']}
-                            //defaultOpenKeys={['sub1']}
                             style={{ height: '100%', borderRight: 0, fontSize: "20px"}}
                         >
-
                             <Menu.Item key="Title" style={{cursor: "default"}}><h1>{nickname}'s when2meet</h1></Menu.Item>
                             
                             <SubMenu key="Information" icon={<UserOutlined />} title="個人資訊">
-                                <Menu.Item key="8">XXXX</Menu.Item>
+                                <Menu.Item key="8">Account: {account}</Menu.Item>
                             </SubMenu>
                             
                             <Menu.Item key="NewEvent" icon={<NotificationOutlined />} onClick={addEvent} >發起活動</Menu.Item>
                             
                             <SubMenu key="FriendList" icon={<TeamOutlined />} title="好友列表">
-                                <Menu.Item key="9">option9</Menu.Item>
-                                <Menu.Item key="10">option10</Menu.Item>
-                                <Menu.Item key="11">option11</Menu.Item>
-                                <Menu.Item key="12">option12</Menu.Item>
+                                {friends.map(({account, nickname}) => (
+                                    <Menu.Item key={account}>{nickname}</Menu.Item>
+                                ))}
+
                             </SubMenu>
                             
                             <Menu.Item key="AddFriend" icon={<UsergroupAddOutlined />} onClick={addFriend}>加好友</Menu.Item>
@@ -67,23 +75,43 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     <NewEventModal
                         visible={eventModalVisible}
                         onCreate={(value) => {
-                            //console.log(value)
-                            console.log(value.date_range[0].format('MM/DD'), 
-                            value.date_range[1].format('MM/DD'), 
-                            parseFloat(value.time_range[0].format('HH.mm')),
-                            parseFloat(value.time_range[1].format('HH.mm'))
-                            );
-                            //use hook to send eventInfo to backend
+                            
+                            console.log(value);
+
+                            //string to Date
+                            setStartDate(new Date(value.date_range[0].format('YYYY-MM-DD')));
+                            setEndDate(new Date(value.date_range[1].format('YYYY-MM-DD')));
+                            
+                            if (parseFloat(value.time_range[0].format('HH.mm')) % 1 !== 0){
+                                setStartTime(parseInt(value.time_range[0].format('HH.mm'))/1 + 0.5);
+                                console.log(startTime);
+                            }
+                            setEndTime(parseFloat(value.time_range[1].format('HH.mm')));
+                            if (parseFloat(value.time_range[1].format('HH.mm')) % 1 !== 0){
+                                setEndTime(parseInt(value.time_range[1].format('HH.mm'))/1 + 0.5);
+                                console.log(endTime);
+                            }
                             /*
-                            newEvent(account, 
-                                    value.title, 
-                                    value.description, 
-                                    value.date_range[0].format('MM/DD'), 
-                                    value.date_range[1].format('MM/DD'), 
-                                    value.time_range[0].format('HH.mm'),
-                                    value.time_range[1].format('HH.mm'), 
-                                    value.participant);
+                            //NewEvent()
+                            server.send(JSON.stringify({
+                                type: "NewEvent",
+                                args: { 
+                                    title: value.title,
+                                    description: value.description,
+                                    startDate: new Date(value.date_range[0].format('YYYY-MM-DD')),
+                                    endDate: new Date(value.date_range[1].format('YYYY-MM-DD')),
+                                    startTime:parseFloat(value.time_range[0].format('HH.mm')),
+                                    endTime: parseFloat(value.time_range[1].format('HH.mm')),
+                                    participants: [{
+                                        account: String                         //revise later
+                                    }],
+                                    launcher: {
+                                        account: account
+                                    }
+                                }
+                            }));
                             */
+                            
                             setEventModalVisible(false);
                             setEventCreated(true);
                         }}
@@ -93,8 +121,31 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     />
                     <AddFriendModal
                         visible={friendModalVisible}
-                        onCreate={() => {
-                            setFriendModalVisible(false);
+                        onCreate={(value) => {
+                            console.log(value.friend)           //array
+                            /*
+                            plan1 - use select
+                            for(let i = 0; i < value.friend.length; i++){
+                                server.send(JSON.stringify({
+                                    type: "AddFriend",
+                                    args: {
+                                        adderAccount: account,
+                                        addedAccount: value.friend.account          //need revise
+                                    }
+                                }));
+                            }
+
+                            plan2 - use input
+                            server.send(JSON.stringify({
+                                type: "AddFriend",
+                                args: {
+                                    adderAccount: account,
+                                    addedAccount: value.friend.account          //need revise
+                                }
+                            }));
+                            */
+                            
+                            setFriendModalVisible(false);                       //delete later
                         }}
                         onCancel={() => {
                             setFriendModalVisible(false);
@@ -107,24 +158,24 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         <h1>活動總覽</h1>
                         <Row gutter={16} style={{marginTop: 20}}>
                             <Col span={6} offset={2}>
-                                <Card title="Card title" bordered={false} style={{ width: 500, height: 200}}>
+                                <Card title="Card title" bordered={false} style={{ width: "60vh", height: "30vh"}}>
                                     <p>description</p>
                                 </Card>
                             </Col>
                             <Col span={6} offset={4}>
-                                <Card title="Card title" bordered={false} style={{ width: 500, height: 200 }}>
+                                <Card title="Card title" bordered={false} style={{ width: "60vh", height: "30vh" }}>
                                     <p>description</p>
                                 </Card>
                             </Col>
                         </Row>
                         <Row gutter={16} style={{marginTop: 20}}>
                             <Col span={6} offset={2}>
-                                <Card title="Card title" bordered={false} style={{ width: 500, height: 200}}>
+                                <Card title="Card title" bordered={false} style={{ width: "60vh", height: "30vh" }}>
                                     <p>description</p>
                                 </Card>
                             </Col>
                             <Col span={6} offset={4}>
-                                <Card title="Card title" bordered={false} style={{ width: 500, height: 200 }}>
+                                <Card title="Card title" bordered={false} style={{ width: "60vh", height: "30vh" }}>
                                     <p>description</p>
                                 </Card>
                             </Col>

@@ -14,7 +14,7 @@ const NewEventModal = ({visible, onCreate, onCancel}) => {
     return (
       <Modal
         visible={visible}
-        title="加好友!"
+        title="建立活動!"
         okText="Add" cancelText="Cancel"
         onOk={() => {
           form.validateFields().then((data) => {
@@ -38,10 +38,6 @@ const NewEventModal = ({visible, onCreate, onCancel}) => {
 
           <Form.Item
             name="description" label="活動內容簡述："
-            rules={[{
-              required: true,
-              message: "Error: 請輸入活動內容!",
-            },]}
           >
             <TextArea rows={5} />
           </Form.Item>

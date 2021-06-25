@@ -7,13 +7,12 @@ import {
     DoubleLeftOutlined
 } from '@ant-design/icons';
 
-import Homepage from "./Homepage";
 import AddFriendModal from "../Components/AddFriendModal";
 
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const EventPage = ({setEventCreated}) => {
+const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) => {
     const [friendModalVisible, setFriendModalVisible] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const addFriend = () => setFriendModalVisible(true);
@@ -25,6 +24,10 @@ const EventPage = ({setEventCreated}) => {
     const handleChange = newSchedule => {
       setSchedule(newSchedule);
     }
+
+    var difference_in_time = endDate.getTime() -startDate.getTime();
+    var difference_in_days = difference_in_time / (1000*3600*24)
+    const days = difference_in_days + 1;
 
     return(
       <Layout className="App-homepage" style={{ minHeight: '100vh' }}>
@@ -117,10 +120,12 @@ const EventPage = ({setEventCreated}) => {
           
           <ScheduleSelector
             selection={schedule}
-            //numDays={5}
-            minTime={8}
-            maxTime={20}
+            numDays={days}
+            startDate={startDate}
+            minTime={startTime}
+            maxTime={endTime}
             hourlyChunks={2}
+            timeFormat={"HH:mm"}
             onChange={handleChange}
           />
           
