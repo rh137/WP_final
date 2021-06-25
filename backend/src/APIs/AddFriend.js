@@ -1,4 +1,6 @@
 import db from "../db";
+import AsyncLock from 'async-lock';
+const lock = new AsyncLock();
 
 const addFriend = async (args) => {
   console.log('AddFriend called.');
@@ -8,26 +10,23 @@ const addFriend = async (args) => {
   }
 
   const { adderAccount, addedAccount } = args
-  const adder = await db.UserModel.findOne({account: adderAccount});
-  const addedUser = await db.UserModel.findOne({account: addedAccount});
-  if (!adder || !addedUser) {
-    return accountNotExistResponse();
-  } else if (adder.friends.includes(addedUser._id)) {
-    return alreadyFriendsResponse();
-  }
-
-  // TODO: async-lock
-  adder.friends.push(addedUser);
-  addedUser.friends.push(adder);
-  await adder.save();
-  await addedUser.save();
-
-  return {
-    type: "AddFriend",
-    data: {
-      success: true
+  let ret;
+  await lock.acquire('AddFriendLock', async () => {
+    const adder = await db.UserModel.findOne({account: adderAccount});
+    const addedUser = await db.UserModel.findOne({account: addedAccount});
+    if (!adder || !addedUser) {
+      ret = accountNotExistResponse();
+    } else if (adder.friends.includes(addedUser._id)) {
+      ret = alreadyFriendsResponse();
+    } else {
+      adder.friends.push(addedUser);
+      addedUser.friends.push(adder);
+      await adder.save();
+      await addedUser.save();
+      ret = addFriendSuccessResponse();
     }
-  }
+  });
+  return ret;
 }
 
 // implementation details
@@ -61,6 +60,14 @@ const alreadyFriendsResponse = () => {
     data: {
       success: false,
       errorType: "ALREADY_FRIENDS"
+    }
+  }
+}
+const addFriendSuccessResponse = () => {
+  return {
+    type: "AddFriend",
+    data: {
+      success: true
     }
   }
 }
