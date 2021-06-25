@@ -8,44 +8,23 @@ const newEvent = async (args) => {
   if (hasMissingFields(args)) {
     return missingFieldsResponse("NewEvent");
   }
-  const {
-    title, description,
-    startDate, endDate,
-    startTime, endTime,
-    participants, launcher
-  } = args
 
+  const { participants, launcher } = args
   if (!await allUsersExist(participants) || !await userExists(launcher)) {
     return accountNotExistResponse("NewEvent");
   }
 
+  const { startDate, endDate, startTime, endTime } = args
   if (isInvalidDate(startDate)) return invalidStartDateResponse();
   else if (isInvalidDate(endDate)) return invalidEndDateResponse();
   else if (isInvalidTime(startTime)) return invalidStartTimeResponse();
   else if (isInvalidTime(endTime)) return invalidEndTimeResponse();
 
-  const participantIds = await getUserIds(participants)
-  // add validated event to db
-  const theNewEvent = await new db.EventModel({
-    title: title,
-    description: description,
-    startDate: startDate,
-    endDate: endDate,
-    startTime: startTime,
-    endTime: endTime,
-    participants: participantIds,
-    launcher: await getUserIdFromAccount(launcher.account)
-  })
-  await theNewEvent.save();
 
-  // add event to participants
-  for (const userId of participantIds) {
-    const user = await db.UserModel.findById(userId);
-    user.events.push(theNewEvent);
-    await user.save();
-  }
+  const newEvent_ = await addEventToDB(args);
+  await addEventToParticipants(newEvent_, participants);
 
-  return newEventSuccessResponse(theNewEvent);
+  return newEventSuccessResponse(newEvent_);
 }
 
 // implementation details
@@ -96,7 +75,34 @@ const getUserIds = async (users) => {
     ))
   )
 }
-
+const addEventToDB = async (args) => {
+  const {
+    title, description,
+    startDate, endDate,
+    startTime, endTime,
+    participants, launcher
+  } = args
+  const newEvent_ = await new db.EventModel({
+    title: title,
+    description: description,
+    startDate: startDate,
+    endDate: endDate,
+    startTime: startTime,
+    endTime: endTime,
+    participants: await getUserIds(participants),
+    launcher: await getUserIdFromAccount(launcher.account)
+  })
+  await newEvent_.save();
+  return newEvent_;
+}
+const addEventToParticipants = async (event, participants) => {
+  const participantIds = await getUserIds(participants);
+  for (const userId of participantIds) {
+    const user = await db.UserModel.findById(userId);
+    user.events.push(event);
+    await user.save();
+  }
+}
 
 // responses
 const invalidStartDateResponse = () => {
