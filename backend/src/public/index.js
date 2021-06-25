@@ -77,6 +77,7 @@ const requestWithoutTypes = () => {
   server.sendEvent({})
 }
 
+// for async test
 const signUpTwice = () => {
   // for async test
   server.sendEvent({
@@ -94,5 +95,42 @@ const signUpTwice = () => {
       password: "1234",
       nickname: "NickName"
     }
+  })
+}
+const addFriendTwice = () => {
+  server.sendEvent({
+    type: "SignUp",
+    args: {
+      account: "AddFriendTestAccount1",
+      password: "aaaaa",
+      nickname: "test1"
+    }
+  })
+  server.sendEvent({
+    type: "SignUp",
+    args: {
+      account: "AddFriendTestAccount2",
+      password: "abbb",
+      nickname: "test2"
+    }
+  })
+  server.sendEvent({
+    type: "AddFriend",
+    args: {
+      adderAccount: "AddFriendTestAccount1",
+      addedAccount: "AddFriendTestAccount2",
+    }
+  })
+  server.sendEvent({
+    type: "AddFriend",
+    args: {
+      adderAccount: "AddFriendTestAccount1",
+      addedAccount: "AddFriendTestAccount2",
+    }
+  })
+}
+const clearUser = () => {
+  server.sendEvent({
+    type: "ClearUser"
   })
 }
