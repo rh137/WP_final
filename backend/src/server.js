@@ -4,17 +4,21 @@ import WebSocket from 'ws';
 
 import { connectToMongoDB } from "./mongo";
 import apis from './APIs'
+import apis_dev from './APIs/devOnly'
 
+// server setup
 const app = express();
 const httpServer = http.createServer(app);
 const wsServer = new WebSocket.Server({ server: httpServer })
 const PORT = 5000;
 
+// sample frontend
 app.use(express.static("./src/public/"));
 
 const { signUp, signIn, newEvent, addFriend, invite,
   getAvailableTimeSlots, updateAvailableTimeSlots,
-  handleInvalidRequestTypes, clearUser } = apis;
+  handleInvalidRequestTypes } = apis;
+const { clearUser } = apis_dev;
 
 connectToMongoDB();
 

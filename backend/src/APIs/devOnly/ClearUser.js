@@ -1,4 +1,4 @@
-import db from "../db";
+import db from "../../db";
 
 const clearUser = async () => {
   await db.UserModel.deleteMany({});
