@@ -25,7 +25,7 @@ const signIn = async (args) => {
       success: true,
       nickname: nickname,
       friends: await getFriendObjectsByIds(friends),
-      events: getEventObjectsByIds(events)
+      events: await getEventObjectsByIds(events)
     }
   }
 }
@@ -49,9 +49,15 @@ const getFriendObjectsByIds = async (friendIds) => {
     )
   );
 }
-const getEventObjectsByIds = (events) => {
-  // TODO: from _id to objects
-  return events;
+const getEventObjectsByIds = async (eventIds) => {
+  return Promise.all(
+    eventIds.map(
+      async (eventId) => {
+        const event = await db.EventModel.findById(eventId);
+        return event;
+      }
+    )
+  );
 }
 
 // responses
