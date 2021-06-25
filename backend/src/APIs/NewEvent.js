@@ -24,12 +24,28 @@ const newEvent = async (args) => {
   else if (isInvalidTime(startTime)) return invalidStartTimeResponse();
   else if (isInvalidTime(endTime)) return invalidEndTimeResponse();
 
-  // TODO: add validated event to db
+  const participantIds = await getUserIdsFromAccounts(participants)
+  // add validated event to db
+  const theNewEvent = await new db.EventModel({
+    title: title,
+    description: description,
+    startDate: startDate,
+    endDate: endDate,
+    startTime: startTime,
+    endTime: endTime,
+    participants: participantIds,
+    launcher: await getUserIdFromAccount(launcher.account)
+  })
+  await theNewEvent.save();
 
-  return {
-    type: "NewEvent",
-    data: {}
+  // add event to participants
+  for (const userId of participantIds) {
+    const user = await db.UserModel.findById(userId);
+    user.events.push(theNewEvent);
+    await user.save();
   }
+
+  return newEventSuccessResponse(theNewEvent);
 }
 
 // implementation details
@@ -55,18 +71,32 @@ const allAccountExist = async (participants) => {
   return true
 }
 const accountExists = async (account) => {
-  const existingUser = await new db.UserModel.findOne({account: account});
+  const existingUser = await db.UserModel.findOne({account: account});
   if (existingUser) return true;
   return false;
 }
 const isInvalidDate = (date) => {
   // date: Date
   // TODO
+  return false
 }
 const isInvalidTime = (time) => {
   // time: Number (Float)
   // TODO
+  return false
 }
+const getUserIdFromAccount = async (account) => {
+  const user = await db.UserModel.findOne({account: account});
+  return user._id;
+}
+const getUserIdsFromAccounts = async (objs) => {
+  return Promise.all(
+    objs.map(async ({ account }) => (
+      await getUserIdFromAccount(account)
+    ))
+  )
+}
+
 
 // responses
 const invalidStartDateResponse = () => {
@@ -104,6 +134,37 @@ const invalidEndTimeResponse = () => {
       errorType: "INVALID_END_TIME"
     }
   }
+}
+const newEventSuccessResponse = async (event) => {
+  const returnedParticipants = Promise.all(
+    event.participants.map(async (_id) => {
+      const user = await db.UserModel.findById(_id);
+      return {
+        account: user.account,
+        nickname: user.nickname
+      }
+    })
+  );
+  const launcherObj = await db.UserModel.findById(event.launcher);
+  const returnedLauncher = {
+    account: launcherObj.account,
+    nickname: launcherObj.nickname
+  };
+
+  return {
+    type: "NewEvent",
+    data: {
+      success: true,
+      title: event.title,
+      description: event.description,
+      startDate: event.startDate,
+      endDate: event.endDate,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      participants: returnedParticipants,
+      launcher: returnedLauncher
+    }
+  };
 }
 
 export default newEvent;
