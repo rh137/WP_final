@@ -145,6 +145,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                             }));
                             */
                             
+
                             setFriendModalVisible(false);                       //delete later
                         }}
                         onCancel={() => {
@@ -153,33 +154,67 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     />
 
                     <Content className="EventBlock"     
-                        style={{padding: 24, marginLeft: 300, height:"100vh"}}
+                        style={{padding: 24, marginLeft: "40vh", height:"100vh"}}
                     >
-                        <h1>活動總覽</h1>
-                        <Row gutter={16} style={{marginTop: 20}}>
-                            <Col span={6} offset={2}>
-                                <Card title="Card title" bordered={false} style={{ width: "60vh", height: "30vh"}}>
-                                    <p>description</p>
-                                </Card>
-                            </Col>
-                            <Col span={6} offset={4}>
-                                <Card title="Card title" bordered={false} style={{ width: "60vh", height: "30vh" }}>
-                                    <p>description</p>
-                                </Card>
-                            </Col>
-                        </Row>
-                        <Row gutter={16} style={{marginTop: 20}}>
-                            <Col span={6} offset={2}>
-                                <Card title="Card title" bordered={false} style={{ width: "60vh", height: "30vh" }}>
-                                    <p>description</p>
-                                </Card>
-                            </Col>
-                            <Col span={6} offset={4}>
-                                <Card title="Card title" bordered={false} style={{ width: "60vh", height: "30vh" }}>
-                                    <p>description</p>
-                                </Card>
-                            </Col>
-                        </Row>
+                        <h1 style={{fontWeight: "bolder"}}>活動總覽</h1>
+                        {(events.length === 0)?(
+                            <>
+                                <p style={{fontSize:18}}>目前尚無參加的活動</p>
+                                <Row gutter={16}>
+                                    <Col span={12}>
+                                        <Card title="title" bordered={false} style={{ width: "60vh", height: "30vh"}}>
+                                            <ul>
+                                                <li>description: "description"</li>
+                                                <li>Date: "startDate" </li>
+                                                <li>Time: "startTime"</li>
+                                            </ul>
+                                        </Card>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Card title="title" bordered={false} style={{ width: "60vh", height: "30vh"}}>
+                                            <ul>
+                                                <li>description: "description"</li>
+                                                <li>Date: "startDate" </li>
+                                                <li>Time: "startTime"</li>
+                                            </ul>
+                                        </Card>
+                                    </Col>
+                                </Row>
+                                
+                            </>
+                        ):(
+                            
+
+
+
+
+                            
+                            events.map(({title, description, startDate, endDate, startTime, endTime}, i) => (
+                                <Row gutter={16} style={{marginTop: 20}}>
+                                    <Col span={6} offset={2}>
+                                        <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh"}}>
+                                            <ul>
+                                                <li>description: {description}</li>
+                                                <li>Date: {startDate} ~ {endDate} </li>
+                                                <li>Time: {startTime} ~ {endTime}</li>
+                                            </ul>
+                                        </Card>
+                                    </Col>
+                                    <Col span={6} offset={4}>
+                                        <Card title="title" bordered={false} style={{ width: "60vh", height: "30vh" }}>
+                                            <ul>
+                                                <li>description: {description}</li>
+                                                <li>Date: {startDate} ~ {endDate} </li>
+                                                <li>Time: {startTime} ~ {endTime}</li>
+                                            </ul>
+                                        </Card>
+                                    </Col>
+                                </Row>
+                            ))
+
+                        )}
+                        
+                                               
                         
 
                     </Content>
