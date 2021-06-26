@@ -5,6 +5,8 @@ const {
   accountNotExistResponse,
   eventNotExistResponse
 } = responses;
+import AsyncLock from 'async-lock';
+const lock = new AsyncLock();
 
 const invite = async (args) => {
   console.log('Invite called.');
@@ -21,7 +23,7 @@ const invite = async (args) => {
   }
 
   const { eventId } = args;
-  const event = await db.EventModel.findById(eventId);
+  let event = await db.EventModel.findById(eventId);
   if (!event) {
     return eventNotExistResponse("Invite");
   }
@@ -30,17 +32,21 @@ const invite = async (args) => {
     return notLauncherResponse();
   }
 
-  if (event.participants.includes(invitedUser._id)){
-    return alreadyInvitedResponse();
-  }
+  let ret;
+  await lock.acquire('InviteLock', async () => {
+    event = await db.EventModel.findById(eventId);
+    if (event.participants.includes(invitedUser._id)) {
+      ret = alreadyInvitedResponse();
+    } else {
+      event.participants.push(invitedUser._id);
+      await event.save();
+      invitedUser.events.push(event._id);
+      await invitedUser.save();
+      ret = inviteSuccessResponse();
+    }
+  });
 
-  event.participants.push(invitedUser._id);
-  await event.save();
-
-  invitedUser.events.push(event._id);
-  await invitedUser.save();
-
-  return inviteSuccessResponse();
+  return ret;
 }
 
 // implementation details
