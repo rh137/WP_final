@@ -3,7 +3,7 @@ const accountNotExistResponse = (type) => {
     type: type,
     data: {
       success: false,
-      errorType: "ACCOUNT_NOT_EXISTS"
+      errorType: "ACCOUNT_NOT_EXIST"
     }
   };
 }
