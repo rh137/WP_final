@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "async-lock": "^1.3.0",
     "dotenv-defaults": "^2.0.2",
     "express": "^4.17.1",
     "mongoose": "^5.12.14",

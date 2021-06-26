@@ -9,7 +9,7 @@ import handleInvalidRequestTypes from "./HandleInvalidRequestTypes";
 
 const apis = {
   signIn, signUp, newEvent, addFriend, invite,
-  updateAvailableTimeSlots, getAvailableTimeSlots, handleInvalidRequestTypes
+  updateAvailableTimeSlots, getAvailableTimeSlots, handleInvalidRequestTypes,
 };
 
-export default apis
+export default apis;

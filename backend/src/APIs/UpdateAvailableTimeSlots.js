@@ -3,6 +3,7 @@ const updateAvailableTimeSlots = async (args) => {
 
   return {
     type: "UpdateAvailableTimeSlots",
+    result: {},
     data: {}
   }
 }

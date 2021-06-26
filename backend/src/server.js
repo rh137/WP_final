@@ -4,17 +4,21 @@ import WebSocket from 'ws';
 
 import { connectToMongoDB } from "./mongo";
 import apis from './APIs'
+import apis_dev from './APIs/devOnly'
 
+// server setup
 const app = express();
 const httpServer = http.createServer(app);
 const wsServer = new WebSocket.Server({ server: httpServer })
 const PORT = 5000;
 
+// sample frontend
 app.use(express.static("./src/public/"));
 
 const { signUp, signIn, newEvent, addFriend, invite,
   getAvailableTimeSlots, updateAvailableTimeSlots,
   handleInvalidRequestTypes } = apis;
+const { clearUser, clearEvent } = apis_dev;
 
 connectToMongoDB();
 
@@ -33,6 +37,8 @@ wsServer.on("connection", (client) => {
       case "Invite": ret = await invite(args); break;
       case "GetAvailableTimeSlots": ret = await getAvailableTimeSlots(args); break;
       case "UpdateAvailableTimeSlots": ret = await updateAvailableTimeSlots(args); break;
+      case "ClearUser": ret = await clearUser(); break;
+      case "ClearEvent": ret = await clearEvent(); break;
       default: ret = handleInvalidRequestTypes(type);
     }
     client.sendData(ret);
