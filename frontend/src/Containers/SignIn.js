@@ -12,7 +12,7 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
         const { type } = e;
         switch (type) {
           case 'SignUp': {
-            const {success} = e.data;
+            const {success} = e.result;
             if(success === true){
                 displayStatus({
                     type: "success",
@@ -23,14 +23,14 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
             else{
                 displayStatus({
                     type: "error",
-                    msg: e.data.errorType,
+                    msg: e.result.errorType,
                 })
             }
             break;
           }
           case 'SignIn': {
             //finish yet
-            const { success} = e.data;
+            const { success} = e.result;
             if(success === true){
                 setNickname(e.data.nickname);
                 setFriends(e.data.friends);
@@ -40,7 +40,7 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
             else{
                 displayStatus({
                     type: "error",
-                    msg: e.data.errorType,
+                    msg: e.result.errorType,
                 })
             }
 
