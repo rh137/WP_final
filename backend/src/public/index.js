@@ -6,12 +6,13 @@ server.sendEvent = (e) => server.send(JSON.stringify(e));
 server.onmessage = (m) => onEvent(JSON.parse(m.data));
 const onEvent = (e) => {
   let alertMsg = e.type;
-  if (e.data.success !== undefined) alertMsg += "\n" + (e.data.success ? "success" : "fail");
-  if (e.data.errorType) alertMsg += "\n" + e.data.errorType;
-  if (e.data.nickname) alertMsg += "\n" + e.data.nickname;
-  if (e.data.friends) alertMsg += "\n" + e.data.friends;
-  if (e.type === "SignIn" && e.data) {
-    if (e.data.success) {
+  if (e.result.success !== undefined) alertMsg += "\n" + (e.result.success ? "success" : "fail");
+  if (e.result.errorType) alertMsg += "\n" + e.result.errorType;
+  if (e.data) {
+    if (e.data.nickname) alertMsg += "\n" + e.data.nickname;
+  }
+  if (e.type === "SignIn" && e.result) {
+    if (e.result.success) {
       console.log(`[SignIn success]\n  account: ${arg1.value}\n  nickname: ${e.data.nickname}`)
       console.log("friends:");
       console.log(e.data.friends);
@@ -19,6 +20,10 @@ const onEvent = (e) => {
       console.log(e.data.events);
     } else {
       console.log(`[SignIn failed]`)
+    }
+  } else if (e.type === "Invite" && e.result) {
+    if (e.result.success) {
+      console.log(e.data.newParticipant);
     }
   }
   alert(alertMsg);

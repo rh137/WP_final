@@ -1,7 +1,7 @@
 const eventNotExistResponse = (type) => {
   return {
     type: type,
-    data: {
+    result: {
       success: false,
       errorType: "EVENT_NOT_EXIST"
     }

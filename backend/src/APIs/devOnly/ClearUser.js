@@ -4,7 +4,7 @@ const clearUser = async () => {
   await db.UserModel.deleteMany({});
   return {
     type: "ClearUser",
-    data: {
+    result: {
       success: true
     }
   }

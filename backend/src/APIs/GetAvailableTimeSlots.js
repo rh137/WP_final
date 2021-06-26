@@ -3,6 +3,7 @@ const getAvailableTimeSlots = async (args) => {
 
   return {
     type: "GetAvailableTimeSlots",
+    result: {},
     data: {}
   }
 }

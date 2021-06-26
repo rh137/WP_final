@@ -1,7 +1,7 @@
 const accountExistsResponse = (type) => {
   return {
     type: type,
-    data: {
+    result: {
       success: false,
       errorType: "ACCOUNT_EXISTS"
     }

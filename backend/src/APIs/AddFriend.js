@@ -43,7 +43,7 @@ const hasMissingFields = (args) => {
 const alreadyFriendsResponse = () => {
   return {
     type: "AddFriend",
-    data: {
+    result: {
       success: false,
       errorType: "ALREADY_FRIENDS"
     }
@@ -52,7 +52,7 @@ const alreadyFriendsResponse = () => {
 const addFriendSuccessResponse = () => {
   return {
     type: "AddFriend",
-    data: {
+    result: {
       success: true
     }
   }

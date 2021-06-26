@@ -59,7 +59,7 @@ const hasMissingFields = (args) => {
 const notLauncherResponse = () => {
   return {
     type: "Invite",
-    data: {
+    result: {
       success: false,
       errorType: "NOT_LAUNCHER"
     }
@@ -68,7 +68,7 @@ const notLauncherResponse = () => {
 const alreadyInvitedResponse = () => {
   return {
     type: "Invite",
-    data: {
+    result: {
       success: false,
       errorType: "ALREADY_INVITED"
     }
@@ -78,8 +78,10 @@ const inviteSuccessResponse = (invitedUser) => {
   const { account, nickname } = invitedUser
   return {
     type: "Invite",
+    result: {
+      success: true
+    },
     data: {
-      success: true,
       newParticipant: {
         account: account,
         nickname: nickname

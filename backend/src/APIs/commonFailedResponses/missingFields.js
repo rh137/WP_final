@@ -1,7 +1,7 @@
 const missingFieldsResponse = (type) => {
   return {
     type: type,
-    data: {
+    result: {
       success: false,
       errorType: "MISSING_FIELDS"
     }

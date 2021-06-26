@@ -41,7 +41,7 @@ const addUserToDB = async (args) => {
 const signUpSuccessResponse = () => {
   return {
     type: "SignUp",
-    data: {
+    result: {
       success: true
     }
   };

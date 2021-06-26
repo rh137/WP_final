@@ -4,7 +4,7 @@ const clearEvent = async () => {
   await db.EventModel.deleteMany({});
   return {
     type: "ClearEvent",
-    data: {
+    result: {
       success: true
     }
   }

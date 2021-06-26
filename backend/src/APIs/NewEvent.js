@@ -108,7 +108,7 @@ const addEventToParticipants = async (event, participants) => {
 const invalidStartDateResponse = () => {
   return {
     type: "NewEvent",
-    data: {
+    result: {
       success: false,
       errorType: "INVALID_START_DATE"
     }
@@ -117,7 +117,7 @@ const invalidStartDateResponse = () => {
 const invalidEndDateResponse = () => {
   return {
     type: "NewEvent",
-    data: {
+    result: {
       success: false,
       errorType: "INVALID_END_DATE"
     }
@@ -126,7 +126,7 @@ const invalidEndDateResponse = () => {
 const invalidStartTimeResponse = () => {
   return {
     type: "NewEvent",
-    data: {
+    result: {
       success: false,
       errorType: "INVALID_START_TIME"
     }
@@ -135,7 +135,7 @@ const invalidStartTimeResponse = () => {
 const invalidEndTimeResponse = () => {
   return {
     type: "NewEvent",
-    data: {
+    result: {
       success: false,
       errorType: "INVALID_END_TIME"
     }
@@ -159,8 +159,10 @@ const newEventSuccessResponse = async (event) => {
 
   return {
     type: "NewEvent",
-    data: {
+    result: {
       success: true,
+    },
+    data: {
       title: event.title,
       description: event.description,
       startDate: event.startDate,
