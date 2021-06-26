@@ -12,6 +12,33 @@ const {Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
 const Homepage = ({account, nickname, friends, events, setFriends, setEvents, server, displayStatus}) => {
+    server.onmessage = (m) => {
+        onEvent(JSON.parse(m.data));
+    };
+    const onEvent = (e) => {
+        const { type } = e;
+        switch (type) {
+            case 'AddFriend': {
+                const {success} = e.result;
+                if(success === true){
+                    displayStatus({
+                        type: "success",
+                        msg: "Add friend successfully.",
+                    });
+                    setFriendModalVisible(false);
+                }
+                else{
+                    displayStatus({
+                        type: "error",
+                        msg: e.result.errorType,
+                    })
+                }
+                
+                break;
+            }
+        }
+    }
+
     const [eventCreated, setEventCreated] = useState(false);
     const [eventModalVisible, setEventModalVisible] = useState(false);      
     const [friendModalVisible, setFriendModalVisible] = useState(false);      
@@ -122,31 +149,14 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     <AddFriendModal
                         visible={friendModalVisible}
                         onCreate={(value) => {
-                            console.log(value.friend)           //array
-                            /*
-                            plan1 - use select
-                            for(let i = 0; i < value.friend.length; i++){
-                                server.send(JSON.stringify({
-                                    type: "AddFriend",
-                                    args: {
-                                        adderAccount: account,
-                                        addedAccount: value.friend.account          //need revise
-                                    }
-                                }));
-                            }
-
-                            plan2 - use input
+                            console.log(value.friendAccount)
                             server.send(JSON.stringify({
                                 type: "AddFriend",
                                 args: {
                                     adderAccount: account,
-                                    addedAccount: value.friend.account          //need revise
+                                    addedAccount: value.friendAccount 
                                 }
-                            }));
-                            */
-                            
-
-                            setFriendModalVisible(false);                       //delete later
+                            }));  
                         }}
                         onCancel={() => {
                             setFriendModalVisible(false);

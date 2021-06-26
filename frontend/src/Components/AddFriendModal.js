@@ -23,7 +23,7 @@ const AddFriendModal = ({visible, onCreate, onCancel}) => {
           name="form_in_modal">
 
           <Form.Item
-            name="friend" label="加入朋友："
+            name="friendAccount" label="加入朋友："
             rules={[{
               required: true,
               message: "Error: 請輸入朋友帳號!",

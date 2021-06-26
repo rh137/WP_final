@@ -29,7 +29,6 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
             break;
           }
           case 'SignIn': {
-            //finish yet
             const { success} = e.result;
             if(success === true){
                 setNickname(e.data.nickname);
@@ -59,8 +58,6 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
             }
         }));        
         
-
-        //setSignedIn(true);              //for test(要註解掉)
     };
     
     const [modalVisible, setModalVisible] = useState(false);
