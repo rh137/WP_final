@@ -27,7 +27,7 @@ const addFriend = async (args) => {
       addedUser.friends.push(adder);
       await adder.save();
       await addedUser.save();
-      ret = addFriendSuccessResponse();
+      ret = addFriendSuccessResponse(addedUser);
     }
   });
   return ret;
@@ -49,11 +49,17 @@ const alreadyFriendsResponse = () => {
     }
   }
 }
-const addFriendSuccessResponse = () => {
+const addFriendSuccessResponse = (friend) => {
   return {
     type: "AddFriend",
     result: {
       success: true
+    },
+    data: {
+      newFriend: {
+        account: friend.account,
+        nickname: friend.nickname
+      }
     }
   }
 }
