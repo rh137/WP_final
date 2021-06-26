@@ -82,15 +82,15 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                             setStartDate(new Date(value.date_range[0].format('YYYY-MM-DD')));
                             setEndDate(new Date(value.date_range[1].format('YYYY-MM-DD')));
                             
+                            //turn XX.3 to XX.5 for ScheduleSelector time format
                             if (parseFloat(value.time_range[0].format('HH.mm')) % 1 !== 0){
-                                setStartTime(parseInt(value.time_range[0].format('HH.mm'))/1 + 0.5);
-                                console.log(startTime);
+                                setStartTime(parseFloat(value.time_range[0].format('HH.mm')) + (0.5-0.3));   
                             }
                             setEndTime(parseFloat(value.time_range[1].format('HH.mm')));
                             if (parseFloat(value.time_range[1].format('HH.mm')) % 1 !== 0){
-                                setEndTime(parseInt(value.time_range[1].format('HH.mm'))/1 + 0.5);
-                                console.log(endTime);
+                                setEndTime(parseFloat(value.time_range[1].format('HH.mm')) + (0.5-0.3));
                             }
+
                             /*
                             //NewEvent()
                             server.send(JSON.stringify({

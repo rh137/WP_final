@@ -13,6 +13,7 @@ const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
 const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) => {
+  console.log(startTime, endTime )
     const [friendModalVisible, setFriendModalVisible] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const addFriend = () => setFriendModalVisible(true);
@@ -23,6 +24,7 @@ const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) =>
     const [schedule, setSchedule] = useState([]);             //useState([Date])
     const handleChange = newSchedule => {
       setSchedule(newSchedule);
+      console.log(schedule);
     }
 
     var difference_in_time = endDate.getTime() -startDate.getTime();
