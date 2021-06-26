@@ -4,33 +4,87 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css">
     <title>Sample Frontend</title>
 </head>
 <body>
+    <div class="input">
+        <div>
+            <input type="text" id="field1" placeholder="arg 1">
+            <input type="text" id="field2" placeholder="arg 2">
+            <input type="text" id="field3" placeholder="arg 3">
+        </div>
+        <button onclick="clearArgs()">Clear Arguments</button>
+    </div>
     <div class="valid">
-        <p>valid requests</p>
-        <button onclick="signIn()">SignIn</button>
-        <button onclick="signUp()">SignUp</button>
-        <button onclick="addFriend()">AddFriend</button>
-        <button onclick="newEvent()">NewEvent</button>
-        <button onclick="invite()">Invite</button>
+        <h2>Valid requests</h2>
+        <div class="implemented">
+            <button onclick="signIn()">SignIn</button>
+            <button onclick="signUp()">SignUp</button>
+            <button onclick="addFriend()">AddFriend</button>
+            <button onclick="newEvent()">NewEvent</button>
+            <button onclick="invite()">Invite</button>
+        </div>
         <button onclick="getAvailableTimeSlots()">GetAvailableTimeSlots</button>
         <button onclick="updateAvailableTimeSlots()">UpdateAvailableTimeSlots</button>
+        <div class="tutorial">
+            <h3>APIs</h3>
+            <table>
+                <tr>
+                    <th>method</th>
+                    <th>arg 1</th>
+                    <th>arg 2</th>
+                    <th>arg 3</th>
+                </tr>
+                <tr>
+                    <td>SignIn</td>
+                    <td>account</td>
+                    <td>password</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>SignUp</td>
+                    <td>account</td>
+                    <td>password</td>
+                    <td>nickname</td>
+                </tr>
+                <tr>
+                    <td>AddFriend</td>
+                    <td>adderAccount</td>
+                    <td>addedAccount</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>NewEvent</td>
+                    <td>participantAccount1</td>
+                    <td>participantAccount2</td>
+                    <td>participantAccount3</td>
+                </tr>
+                <tr>
+                    <td>Invite</td>
+                    <td>inviterAccount</td>
+                    <td>invitedAccount</td>
+                    <td>eventId</td>
+                </tr>
+            </table>
+        </div>
     </div>
     <div class="invalid">
-        <p>invalid requests</p>
+        <h2>Invalid requests</h2>
         <button onclick="requestWithUnexpectedType()">RequestWithUnexpectedType</button>
         <button onclick="requestWithoutTypes()">RequestWithoutTypes</button>
     </div>
-    <div class="test">
-        <p>for testing</p>
+    <div class="async-test">
+        <h2>For (async) testing</h2>
         <button onclick="signUpTwice()">SignUpTwice</button>
         <button onclick="addFriendTwice()">AddFriendTwice</button>
+        <button onclick="inviteTwice()">InviteTwice</button>
     </div>
     <div class="clear">
-        <p>clear DB</p>
+        <h2>Clear DB</h2>
         <button onclick="clearUser()">ClearUser</button>
         <button onclick="clearEvent()">ClearEvent</button>
+        <button onclick="clearAll()">ClearAll</button>
     </div>
     <script src="index.js"></script>
 </body>
