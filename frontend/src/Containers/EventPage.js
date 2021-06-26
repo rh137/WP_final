@@ -27,6 +27,7 @@ const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) =>
       console.log(schedule);
     }
 
+    
     var difference_in_time = endDate.getTime() -startDate.getTime();
     var difference_in_days = difference_in_time / (1000*3600*24)
     const days = difference_in_days + 1;

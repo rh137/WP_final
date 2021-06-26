@@ -5,7 +5,7 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const NewEventModal = ({visible, onCreate, onCancel}) => {
+const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
     const [form] = Form.useForm();
     const tailLayout = {
       wrapperCol: { offset: 0, span: 13 },
@@ -62,15 +62,14 @@ const NewEventModal = ({visible, onCreate, onCancel}) => {
             {...tailLayout}
           >
             <TimePicker.RangePicker 
-              //defaultValue={[moment('--:--', 'HH:mm'), moment('--:--', 'HH:mm')]} 
               format={"HH:mm"} 
               minuteStep={30} 
-              order="true"
+              //order="true"
             />
           </Form.Item>
 
           <Form.Item
-            name="participant" label="選擇參加者："
+            name="participants" label="選擇參加者："
             rules={[{
               required: true,
               message: "Error: 請至少選定一名參加者!",
@@ -84,26 +83,15 @@ const NewEventModal = ({visible, onCreate, onCancel}) => {
               //defaultValue={['china']}
               optionLabelProp="label"
             >
-              <Option value="friend1" >
-                <div className="demo-option-label-item">
-                  friend1
-                </div>
-              </Option>
-              <Option value="friend2" >
-                <div className="demo-option-label-item">
-                  friend2
-                </div>
-              </Option>
-              <Option value="friend3">
-                <div className="demo-option-label-item">
-                  friend3
-                </div>
-              </Option>
-              <Option value="friend4">
-                <div className="demo-option-label-item">
-                  friend4
-                </div>
-              </Option>
+              {friends.map(({account, nickname}) => (
+                <Option value={account} key={account}>
+                    <div>
+                      {nickname}
+                    </div>
+                </Option>
+              ))}
+              
+            
             </Select>
           </Form.Item>
 

@@ -25,6 +25,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         type: "success",
                         msg: "Add friend successfully.",
                     });
+                    setFriends(e.data.newFriend);
                     setFriendModalVisible(false);
                 }
                 else{
@@ -33,8 +34,39 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         msg: e.result.errorType,
                     })
                 }
-                
                 break;
+            }
+
+            case 'NewEvent': {
+                const {success} = e.result;
+                if(success === true){
+                    displayStatus({
+                        type: "success",
+                        msg: "New event successfully.",
+                    });
+
+                    setTitle(e.data.title);
+                    setDescription(e.data.description);
+                    setStartDate(e.data.startDate);
+                    setEndDate(e.data.endDate);
+                    setStartTime(e.data.startTime);
+                    setEndTime(e.data.endTime);
+                    setParticipants(e.data.participants);
+                    setLauncher(e.data.launcher);
+                    setID(e.data._id);
+                    
+                    setEventModalVisible(false);
+                    setEventCreated(true);
+                }
+                else{
+                    displayStatus({
+                        type: "error",
+                        msg: e.result.errorType,
+                    })
+                }
+                break;
+
+
             }
         }
     }
@@ -43,10 +75,15 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
     const [eventModalVisible, setEventModalVisible] = useState(false);      
     const [friendModalVisible, setFriendModalVisible] = useState(false);      
     
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const [startTime, setStartTime] = useState();
     const [endTime, setEndTime] = useState();
+    const [participants, setParticipants] = useState([]);
+    const [launcher, setLauncher] = useState();
+    const [id, setID] = useState();
     
 
 
@@ -100,26 +137,27 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     </Sider>
 
                     <NewEventModal
+                        friends={friends}
                         visible={eventModalVisible}
-                        onCreate={(value) => {
-                            
+                        onCreate={(value) => {                           
                             console.log(value);
 
-                            //string to Date
-                            setStartDate(new Date(value.date_range[0].format('YYYY-MM-DD')));
-                            setEndDate(new Date(value.date_range[1].format('YYYY-MM-DD')));
+                            if(value.description === undefined){
+                                value.description = "";
+                            }
                             
                             //turn XX.3 to XX.5 for ScheduleSelector time format
-                            if (parseFloat(value.time_range[0].format('HH.mm')) % 1 !== 0){
-                                setStartTime(parseFloat(value.time_range[0].format('HH.mm')) + (0.5-0.3));   
-                            }
-                            setEndTime(parseFloat(value.time_range[1].format('HH.mm')));
-                            if (parseFloat(value.time_range[1].format('HH.mm')) % 1 !== 0){
-                                setEndTime(parseFloat(value.time_range[1].format('HH.mm')) + (0.5-0.3));
-                            }
+                            if (parseFloat(value.time_range[0].format('HH.mm')) % 1 !== 0)
+                                value.time_range[0] = parseFloat(value.time_range[0].format('HH.mm')) + (0.5-0.3);
+                            else
+                                value.time_range[0] = parseFloat(value.time_range[0].format('HH.mm'));
+                            if (parseFloat(value.time_range[1].format('HH.mm')) % 1 !== 0)
+                                value.time_range[1] = parseFloat(value.time_range[1].format('HH.mm')) + (0.5-0.3);
+                            else
+                                value.time_range[1] = parseFloat(value.time_range[1].format('HH.mm'));
+                            
+                            value.participants.push(account);
 
-                            /*
-                            //NewEvent()
                             server.send(JSON.stringify({
                                 type: "NewEvent",
                                 args: { 
@@ -127,20 +165,16 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                     description: value.description,
                                     startDate: new Date(value.date_range[0].format('YYYY-MM-DD')),
                                     endDate: new Date(value.date_range[1].format('YYYY-MM-DD')),
-                                    startTime:parseFloat(value.time_range[0].format('HH.mm')),
-                                    endTime: parseFloat(value.time_range[1].format('HH.mm')),
+                                    startTime: value.time_range[0],
+                                    endTime: value.time_range[1],
                                     participants: [{
-                                        account: String                         //revise later
+                                        account: value.participants                         
                                     }],
                                     launcher: {
                                         account: account
                                     }
                                 }
                             }));
-                            */
-                            
-                            setEventModalVisible(false);
-                            setEventCreated(true);
                         }}
                         onCancel={() => {
                             setEventModalVisible(false);
