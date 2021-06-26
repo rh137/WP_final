@@ -43,7 +43,6 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                     msg: e.result.errorType,
                 })
             }
-
             break;
           }
         }
@@ -51,7 +50,7 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
 
     const onFinish = () => {
         console.log('Received values of form: ', account, password);
-        /*
+        
         server.send(JSON.stringify({
             type: "SignIn",
             args: {
@@ -59,9 +58,9 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                 password: password,
             }
         }));        
-        */
+        
 
-        setSignedIn(true);              //for test(要註解掉)
+        //setSignedIn(true);              //for test(要註解掉)
     };
     
     const [modalVisible, setModalVisible] = useState(false);
