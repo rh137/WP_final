@@ -42,7 +42,7 @@ const invite = async (args) => {
       await event.save();
       invitedUser.events.push(event._id);
       await invitedUser.save();
-      ret = inviteSuccessResponse();
+      ret = inviteSuccessResponse(invitedUser);
     }
   });
 
@@ -74,11 +74,16 @@ const alreadyInvitedResponse = () => {
     }
   };
 }
-const inviteSuccessResponse = () => {
+const inviteSuccessResponse = (invitedUser) => {
+  const { account, nickname } = invitedUser
   return {
     type: "Invite",
     data: {
-      success: true
+      success: true,
+      newParticipant: {
+        account: account,
+        nickname: nickname
+      }
     }
   }
 }
