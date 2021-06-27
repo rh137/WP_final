@@ -170,7 +170,8 @@ const newEventSuccessResponse = async (event) => {
       startTime: event.startTime,
       endTime: event.endTime,
       participants: returnedParticipants,
-      launcher: returnedLauncher
+      launcher: returnedLauncher,
+      _id: event._id
     }
   };
 }
