@@ -12,9 +12,7 @@ import AddFriendModal from "../Components/AddFriendModal";
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const EventPage = ({setEventCreated, account, title, description, startDate, endDate, startTime, endTime, participants, launcher, id, setParticipants, server, displayStatus}) => {
-  console.log(title, description, startDate, endDate, startTime, endTime, participants, launcher, id);
-  
+const EventPage = ({setEnterEvent, account, title, description, startDate, endDate, startTime, endTime, participants, launcher, id, setParticipants, server, displayStatus}) => {
   server.onmessage = (m) => {
     onEvent(JSON.parse(m.data));
   };
@@ -44,8 +42,8 @@ const EventPage = ({setEventCreated, account, title, description, startDate, end
 
   const [friendModalVisible, setFriendModalVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const addFriend = () => setFriendModalVisible(true);
-  const closeEvent = () => setEventCreated(false);
+  const addParticipant = () => setFriendModalVisible(true);
+  const closeEvent = () => setEnterEvent(false);
   const turnEditMode = () => setEditMode(true);
   const turnViewMode = () => setEditMode(false);
 
@@ -70,10 +68,8 @@ const EventPage = ({setEventCreated, account, title, description, startDate, end
           height: "100vh",
           left: 0,
           backgroundColor: "white",
-      }}
-      >
+      }}>
         <Menu  
-          //defaultSelectedKeys={['sub1']} 
           mode="inline"
           style={{fontSize: "18px"}}
         >
@@ -86,7 +82,7 @@ const EventPage = ({setEventCreated, account, title, description, startDate, end
             
           </SubMenu>
 
-          <Menu.Item key="9" icon={<TeamOutlined />} onClick={addFriend}>
+          <Menu.Item key="9" icon={<TeamOutlined />} onClick={addParticipant}>
             Invite More
           </Menu.Item>
         </Menu>
@@ -102,8 +98,7 @@ const EventPage = ({setEventCreated, account, title, description, startDate, end
                   invitedAccount: value.friendAccount,
                   eventId: id
               }
-          }));  
-            setFriendModalVisible(false);
+          }));
         }}
         onCancel={() => {
             setFriendModalVisible(false);

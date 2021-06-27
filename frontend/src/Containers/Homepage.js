@@ -6,7 +6,6 @@ import EventPage from "./EventPage";
 import NewEventModal from "../Components/NewEventModal";
 import AddFriendModal from "../Components/AddFriendModal";
 
-
 const {Sider, Content, Header } = Layout;
 const { SubMenu } = Menu;
 
@@ -49,14 +48,15 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     setParticipants(e.data.participants);
                     setLauncher(e.data.launcher);
                     setID(e.data._id);
-                    
-                    console.log(e.data)
+
+                    let updateEvents = [...events, e.data];
+                    setEvents(updateEvents);
                     setEventModalVisible(false);
                     displayStatus({
                         type: "success",
                         msg: "New event successfully.",
                     });
-                    setEventCreated(true);
+                    setEnterEvent(true);
                 }
                 else{
                     displayStatus({
@@ -65,15 +65,13 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     })
                 }
                 break;
-
             }
         }
     }
 
-    const [eventCreated, setEventCreated] = useState(false);
+    const [enterEvent, setEnterEvent] = useState(false);
     const [eventModalVisible, setEventModalVisible] = useState(false);      
     const [friendModalVisible, setFriendModalVisible] = useState(false);      
-    
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState();
@@ -86,7 +84,6 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
     
     const addEvent = () => setEventModalVisible(true);
     const addFriend = () => setFriendModalVisible(true);
-    const enterEvent = () => setEventCreated(true);
     //for event block render
     const divideGroup = (arr) => {                                  
         const len = Math.ceil(arr.length/2)
@@ -100,9 +97,9 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
     console.log(eventGroup);
     return(
         <>
-            {eventCreated ? (
+            {enterEvent ? (
                 <EventPage 
-                    setEventCreated={setEventCreated}
+                    setEnterEvent={setEnterEvent}
                     account={account}
                     title={title}
                     description={description}
@@ -173,9 +170,6 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                 value.time_range[1] = parseFloat(value.time_range[1].format('HH.mm'));
                             
                             value.participants.push(account);
-                            for(let i = 0; i < value.participants.length; i++){
-                                console.log(value.participants[i]);
-                            }
 
                             server.send(JSON.stringify({
                                 type: "NewEvent",
@@ -186,20 +180,8 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                     endDate: new Date(value.date_range[1].format('YYYY-MM-DD')),
                                     startTime: value.time_range[0],
                                     endTime: value.time_range[1],
-                                    participants: [
-                                        {account: value.participants.map((i) => (
-                                            i
-                                        ))}
-                                        /*
-                                        value.participants.map((i) => (
-                                            {account: i}
-                                        ),)*/
-                                    ],
-                                    /*participants: [
-                                        {account: value.participants}],*/
-                                    launcher: {
-                                        account: account
-                                    }
+                                    participants: value.participants.map((accountStr) => ({account: accountStr})),
+                                    launcher: {account: account}
                                 }
                             }));
                             
@@ -245,32 +227,24 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                     <Row gutter={16} style={{marginTop: 20}}>
                                         {i.map(({title, description, startDate, endDate, startTime, endTime, participants, launcher, _id}) => (
                                             <Col span={12}>
-                                            <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh", cursor:"pointer"}} 
-                                                onClick={
-                                                 
-                                                   
-                                                    enterEvent
-                                                }>
-                                                <ul>
-                                                    {(description.length === 0)?(null):(<li>Description: {description}</li>)}
-                                                    <li>Date: {(startDate.length > 10)? startDate.slice(0,10):null} ~ {(endDate.length > 10)? endDate.slice(0,10):null}</li>
-                                                    <li>Launcher: {launcher.nickname}</li>
-                                                </ul>
-                                            </Card>
-                                        </Col>
+                                                <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh", cursor:"pointer"}} 
+                                                >
+                                                    <ul>
+                                                        {(description.length === 0)?(null):(<li>Description: {description}</li>)}
+                                                        <li>Date: {(startDate.length > 10)? startDate.slice(0,10):null} ~ {(endDate.length > 10)? endDate.slice(0,10):null}</li>
+                                                        <li>Launcher: {launcher.nickname}</li>
+                                                    </ul>
+                                                </Card>
+                                            </Col>
                                         ))}
                                     </Row>
                                 ))
                             )}  
-
                         </Content>
-                    </Layout>
-                       
+                    </Layout>  
                 </Layout>
-            )
-        }
-        </>
-        
+            )}
+        </> 
     )}
 
 export default Homepage;
