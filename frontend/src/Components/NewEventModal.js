@@ -64,7 +64,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
             <TimePicker.RangePicker 
               format={"HH:mm"} 
               minuteStep={30} 
-              //order="true"
+              order="false"
             />
           </Form.Item>
           
@@ -85,7 +85,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
               {friends.map(({account, nickname}) => (
                 <Option value={account} key={account}>
                     <div>
-                      {nickname}
+                      {nickname} ({account})
                     </div>
                 </Option>
               ))}

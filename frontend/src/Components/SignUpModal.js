@@ -20,7 +20,7 @@ const SignUpModal = ({visible, onCreate, onCancel}) => {
             name="nickname" label=" 暱稱："
             rules={[{
               required: true,
-              message: "Error: Please enter the Nickname!",
+              message: "Error: Please enter Nickname!",
             },]}
           >
             <Input />

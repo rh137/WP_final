@@ -79,7 +79,7 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                 <Form.Item
                     name="account"
                     label="帳號"
-                    rules={[{ required: true, message: 'Please input your Account Number!' }]}
+                    rules={[{ required: true, message: 'Please input your Account!' }]}
                 >
                     <Input 
                         prefix={<UserOutlined className="site-form-item-icon" />} 

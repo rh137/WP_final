@@ -211,14 +211,22 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     <AddFriendModal
                         visible={friendModalVisible}
                         onCreate={(value) => {
-                            console.log(value.friendAccount)
-                            server.send(JSON.stringify({
-                                type: "AddFriend",
-                                args: {
-                                    adderAccount: account,
-                                    addedAccount: value.friendAccount 
-                                }
-                            }));  
+                            if(value.friendAccount !== account){
+                                server.send(JSON.stringify({
+                                    type: "AddFriend",
+                                    args: {
+                                        adderAccount: account,
+                                        addedAccount: value.friendAccount 
+                                    }
+                                }));  
+                            }
+                            else{
+                                displayStatus({
+                                    type: "error",
+                                    msg: "Can't add yourself!",
+                                })
+                            }
+                            
                         }}
                         onCancel={() => {
                             setFriendModalVisible(false);
