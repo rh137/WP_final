@@ -15,6 +15,33 @@ const { SubMenu } = Menu;
 const EventPage = ({setEventCreated, account, title, description, startDate, endDate, startTime, endTime, participants, launcher, id, setParticipants, server, displayStatus}) => {
   console.log(title, description, startDate, endDate, startTime, endTime, participants, launcher, id);
   
+  server.onmessage = (m) => {
+    onEvent(JSON.parse(m.data));
+  };
+  const onEvent = (e) => {
+    const { type } = e;
+    switch (type) {
+      case 'Invite': {
+        const {success} = e.result;
+        if(success === true){
+            setParticipants(e.data.newParticipant);
+            displayStatus({
+                type: "success",
+                msg: "Invite successfully.",
+            });         
+            setFriendModalVisible(false);
+        }
+        else{
+            displayStatus({
+                type: "error",
+                msg: e.result.errorType,
+            })
+        }
+        break;
+      }
+    }
+};
+
   const [friendModalVisible, setFriendModalVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const addFriend = () => setFriendModalVisible(true);
@@ -65,7 +92,15 @@ const EventPage = ({setEventCreated, account, title, description, startDate, end
       
       <AddFriendModal
         visible={friendModalVisible}
-        onCreate={() => {
+        onCreate={(value) => {
+            server.send(JSON.stringify({
+              type: "Invite",
+              args: {
+                  inviterAccount: account,
+                  invitedAccount: value.friendAccount,
+                  eventId: id
+              }
+          }));  
             setFriendModalVisible(false);
         }}
         onCancel={() => {
@@ -73,7 +108,7 @@ const EventPage = ({setEventCreated, account, title, description, startDate, end
         }}
       />
 
-      <Content className=""style={{padding: 24, marginLeft: 200, height:"100vh"}}>
+      <Content className=""style={{padding: 24, marginLeft: 200, minHeight:"100vh"}}>
         <Row style={{backgroundColor: "white"}} >
           <Col 
             span={10} 

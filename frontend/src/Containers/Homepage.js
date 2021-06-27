@@ -5,10 +5,9 @@ import "../App.css";
 import EventPage from "./EventPage";
 import NewEventModal from "../Components/NewEventModal";
 import AddFriendModal from "../Components/AddFriendModal";
-import { setDate } from "date-fns";
 
 
-const {Sider, Content } = Layout;
+const {Sider, Content, Header } = Layout;
 const { SubMenu } = Menu;
 
 const Homepage = ({account, nickname, friends, events, setFriends, setEvents, server, displayStatus}) => {
@@ -25,7 +24,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         type: "success",
                         msg: "Add friend successfully.",
                     });
-                    setFriends(e.data.newFriend);
+                    setFriends().push(e.data.newFriend);
                     setFriendModalVisible(false);
                 }
                 else{
@@ -50,7 +49,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     setLauncher(e.data.launcher);
                     setID(e.data._id);
                     
-                    console.log(participants)
+                    console.log(e.data)
                     setEventModalVisible(false);
                     displayStatus({
                         type: "success",
@@ -65,7 +64,6 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     })
                 }
                 break;
-
 
             }
         }
@@ -85,11 +83,18 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
     const [launcher, setLauncher] = useState();
     const [id, setID] = useState();
     
-
-
-
     const addEvent = () => setEventModalVisible(true);
     const addFriend = () => setFriendModalVisible(true);
+
+    const divideGroup = (arr) => {                                  //for event block render
+        const len = Math.ceil(arr.length/2)
+        let ret = []
+        for (let i = 0; i < len; i++){
+          ret.push(arr.slice(i*2, (i+1)*2));
+        }
+        return ret;
+    }
+    let eventGroup = divideGroup(events);
 
     return(
         <>
@@ -113,7 +118,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
             ):(
                 <Layout className="App-homepage" >
                     <Sider 
-                        width={300}
+                        width={"40vh"}
                         style={{
                         overflow: 'auto',
                         height: '100vh',
@@ -169,10 +174,6 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                             for(let i = 0; i < value.participants.length; i++){
                                 console.log(value.participants[i]);
                             }
-                            
-                            value.participants.map((i) => {
-                                console.log(i+"{"+i+"}")
-                            })
 
                             server.send(JSON.stringify({
                                 type: "NewEvent",
@@ -222,78 +223,38 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         }}
                     />
 
-                    <Content className="EventBlock"     
-                        style={{padding: 24, marginLeft: "40vh", height:"100vh"}}
-                    >
-                        <h1 style={{fontWeight: "bolder"}}>活動總覽</h1>
-                        {(events.length === 0)?(
-                            <>
+                    <Layout className="site-layout">
+                        <Content className="EventBlock site-layout-background"     
+                            style={{padding: 24, marginLeft: "45vh", height:"100vh"}}
+                        >
+                            <h1 style={{fontWeight: "bolder"}}>活動總覽</h1>
+                            {(events.length === 0)?(
                                 <p style={{fontSize:18}}>目前尚無參加的活動</p>
-                                <Row gutter={16}>
-                                    <Col span={12}>
-                                        <Card title="title" bordered={false} style={{ width: "60vh", height: "30vh"}}>
-                                            <ul>
-                                                <li>description: "description"</li>
-                                                <li>Date: "startDate" </li>
-                                                <li>Time: "startTime"</li>
-                                            </ul>
-                                        </Card>
-                                    </Col>
-                                    <Col span={12}>
-                                        <Card title="title" bordered={false} style={{ width: "60vh", height: "30vh"}}>
-                                            <ul>
-                                                <li>description: "description"</li>
-                                                <li>Date: "startDate" </li>
-                                                <li>Time: "startTime"</li>
-                                            </ul>
-                                        </Card>
-                                    </Col>
-                                </Row>
-                                
-                            </>
-                        ):(
-                            
+                            ):(
+                                eventGroup.map((i) => (
+                                    <Row gutter={16} style={{marginTop: 20}}>
+                                        {i.map(({title, description, startDate, endDate, startTime, endTime, launcher}) => (
+                                            <Col span={12}>
+                                            <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh"}}>
+                                                <ul>
+                                                    {(description.length === 0)?(null):(<li>Description: {description}</li>)}
+                                                    <li>Date: {(startDate.length > 10)? startDate.slice(0,10):null} ~ {(endDate.length > 10)? endDate.slice(0,10):null}</li>
+                                                    <li>Launcher: {launcher.nickname}</li>
+                                                </ul>
+                                            </Card>
+                                        </Col>
+                                        ))}
+                                    </Row>
+                                ))
+                            )}  
 
-
-
-
-                            
-                            events.map(({title, description, startDate, endDate, startTime, endTime}, i) => (
-                                <Row gutter={16} style={{marginTop: 20}}>
-                                    <Col span={6} offset={2}>
-                                        <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh"}}>
-                                            <ul>
-                                                <li>description: {description}</li>
-                                                <li>Date: {startDate} ~ {endDate} </li>
-                                                <li>Time: {startTime} ~ {endTime}</li>
-                                            </ul>
-                                        </Card>
-                                    </Col>
-                                    <Col span={6} offset={4}>
-                                        <Card title="title" bordered={false} style={{ width: "60vh", height: "30vh" }}>
-                                            <ul>
-                                                <li>description: {description}</li>
-                                                <li>Date: {startDate} ~ {endDate} </li>
-                                                <li>Time: {startTime} ~ {endTime}</li>
-                                            </ul>
-                                        </Card>
-                                    </Col>
-                                </Row>
-                            ))
-
-                        )}
-                        
-                                               
-                        
-
-                    </Content>
+                        </Content>
+                    </Layout>
+                       
                 </Layout>
             )
         }
-
-
         </>
-
         
     )}
 
