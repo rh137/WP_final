@@ -85,8 +85,9 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
     
     const addEvent = () => setEventModalVisible(true);
     const addFriend = () => setFriendModalVisible(true);
-
-    const divideGroup = (arr) => {                                  //for event block render
+    const enterEvent = () => setEventCreated(true);
+    //for event block render
+    const divideGroup = (arr) => {                                  
         const len = Math.ceil(arr.length/2)
         let ret = []
         for (let i = 0; i < len; i++){
@@ -95,7 +96,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
         return ret;
     }
     let eventGroup = divideGroup(events);
-
+    console.log(eventGroup);
     return(
         <>
             {eventCreated ? (
@@ -223,7 +224,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         }}
                     />
 
-                    <Layout className="site-layout">
+                    <Layout className="site-layout" style={{overflow:"scroll"}}>
                         <Content className="EventBlock site-layout-background"     
                             style={{padding: 24, marginLeft: "45vh", height:"100vh"}}
                         >
@@ -233,9 +234,14 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                             ):(
                                 eventGroup.map((i) => (
                                     <Row gutter={16} style={{marginTop: 20}}>
-                                        {i.map(({title, description, startDate, endDate, startTime, endTime, launcher}) => (
+                                        {i.map(({title, description, startDate, endDate, startTime, endTime, participants, launcher, _id}) => (
                                             <Col span={12}>
-                                            <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh"}}>
+                                            <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh", cursor:"pointer"}} 
+                                                onClick={
+                                                 
+                                                   
+                                                    enterEvent
+                                                }>
                                                 <ul>
                                                     {(description.length === 0)?(null):(<li>Description: {description}</li>)}
                                                     <li>Date: {(startDate.length > 10)? startDate.slice(0,10):null} ~ {(endDate.length > 10)? endDate.slice(0,10):null}</li>
