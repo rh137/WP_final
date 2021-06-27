@@ -25,6 +25,10 @@ const onEvent = (e) => {
     if (e.result.success) {
       console.log(e.data.newParticipant);
     }
+  } else if (e.type === "AddFriend") {
+    console.log(e.data);
+  } else if (e.type === "NewEvent") {
+    console.log(e.data);
   }
   alert(alertMsg);
 };
