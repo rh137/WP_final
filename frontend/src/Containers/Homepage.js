@@ -24,7 +24,8 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         type: "success",
                         msg: "Add friend successfully.",
                     });
-                    setFriends().push(e.data.newFriend);
+                    let updatedFriends = [...friends, e.data.newFriend];
+                    setFriends(updatedFriends);
                     setFriendModalVisible(false);
                 }
                 else{
