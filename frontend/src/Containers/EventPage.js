@@ -12,25 +12,25 @@ import AddFriendModal from "../Components/AddFriendModal";
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) => {
-  console.log(startTime, endTime )
-    const [friendModalVisible, setFriendModalVisible] = useState(false);
-    const [editMode, setEditMode] = useState(false);
-    const addFriend = () => setFriendModalVisible(true);
-    const closeEvent = () => setEventCreated(false);
-    const turnEditMode = () => setEditMode(true);
-    const turnViewMode = () => setEditMode(false);
+const EventPage = ({setEventCreated, account, title, description, startDate, endDate, startTime, endTime, participants, launcher, id, setParticipants, server, displayStatus}) => {
+  console.log(title, description, startDate, endDate, startTime, endTime, participants, launcher, id);
+  
+  const [friendModalVisible, setFriendModalVisible] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const addFriend = () => setFriendModalVisible(true);
+  const closeEvent = () => setEventCreated(false);
+  const turnEditMode = () => setEditMode(true);
+  const turnViewMode = () => setEditMode(false);
 
-    const [schedule, setSchedule] = useState([]);             //useState([Date])
-    const handleChange = newSchedule => {
-      setSchedule(newSchedule);
-      console.log(schedule);
-    }
-
-    
-    var difference_in_time = endDate.getTime() -startDate.getTime();
-    var difference_in_days = difference_in_time / (1000*3600*24)
-    const days = difference_in_days + 1;
+  const [schedule, setSchedule] = useState([]);             //useState([Date])
+  const handleChange = newSchedule => {
+    setSchedule(newSchedule);
+    console.log(schedule);
+  }
+  var difference_in_time = new Date(endDate).getTime() - new Date(startDate).getTime();
+  var difference_in_days = difference_in_time / (1000*3600*24);
+  const days = difference_in_days + 1;
+  console.log(days);
 
     return(
       <Layout className="App-homepage" style={{ minHeight: '100vh' }}>
@@ -53,9 +53,8 @@ const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) =>
           </Menu.Item>
 
           <SubMenu key="sub1" icon={<UserOutlined />} title="Participant">
-            <Menu.Item key="3">Tom</Menu.Item>
-            <Menu.Item key="4">Bill</Menu.Item>
-            <Menu.Item key="5">Alex</Menu.Item>
+            
+            
           </SubMenu>
 
           <Menu.Item key="9" icon={<TeamOutlined />} onClick={addFriend}>
@@ -80,8 +79,8 @@ const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) =>
             span={10} 
             style={{padding: 15}}
           >
-            <h1 style={{fontWeight: "bold"}}>title</h1>
-            <div style={{minHeight: "20vh"}}>description</div>
+            <h1 style={{fontWeight: "bold"}}>{title}</h1>
+            <div style={{minHeight: "20vh"}}>{description}</div>
             <Row style={{margin: 5, minHeight: "55vh"}}>
               {(editMode === true)?(
                 <p></p>
@@ -122,6 +121,7 @@ const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) =>
           <Col span={14} style={{ padding: 15}}>
           
           <ScheduleSelector
+            onChange={handleChange}
             selection={schedule}
             numDays={days}
             startDate={startDate}
@@ -129,7 +129,7 @@ const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) =>
             maxTime={endTime}
             hourlyChunks={2}
             timeFormat={"HH:mm"}
-            onChange={handleChange}
+            hoveredColor={"rgba(89, 154, 242, 1)"}
           />
           
           
@@ -140,7 +140,7 @@ const EventPage = ({setEventCreated, startDate, endDate, startTime, endTime}) =>
           
     </Layout>
  
-      
-    )}
+    )
+  }
 
 export default EventPage;

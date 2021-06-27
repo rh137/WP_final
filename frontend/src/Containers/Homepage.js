@@ -40,11 +40,6 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
             case 'NewEvent': {
                 const {success} = e.result;
                 if(success === true){
-                    displayStatus({
-                        type: "success",
-                        msg: "New event successfully.",
-                    });
-
                     setTitle(e.data.title);
                     setDescription(e.data.description);
                     setStartDate(e.data.startDate);
@@ -55,7 +50,12 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     setLauncher(e.data.launcher);
                     setID(e.data._id);
                     
+                    console.log(participants)
                     setEventModalVisible(false);
+                    displayStatus({
+                        type: "success",
+                        msg: "New event successfully.",
+                    });
                     setEventCreated(true);
                 }
                 else{
@@ -96,10 +96,19 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
             {eventCreated ? (
                 <EventPage 
                     setEventCreated={setEventCreated}
+                    account={account}
+                    title={title}
+                    description={description}
                     startDate={startDate}
                     endDate={endDate}
                     startTime={startTime}
                     endTime={endTime}
+                    participants={participants}
+                    launcher={launcher}
+                    id={id}
+                    setParticipants={participants}
+                    server={server}
+                    displayStatus={displayStatus}
                 />
             ):(
                 <Layout className="App-homepage" >
@@ -157,6 +166,13 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                 value.time_range[1] = parseFloat(value.time_range[1].format('HH.mm'));
                             
                             value.participants.push(account);
+                            for(let i = 0; i < value.participants.length; i++){
+                                console.log(value.participants[i]);
+                            }
+                            
+                            value.participants.map((i) => {
+                                console.log(i+"{"+i+"}")
+                            })
 
                             server.send(JSON.stringify({
                                 type: "NewEvent",
@@ -167,14 +183,23 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                     endDate: new Date(value.date_range[1].format('YYYY-MM-DD')),
                                     startTime: value.time_range[0],
                                     endTime: value.time_range[1],
-                                    participants: [{
-                                        account: value.participants                         
-                                    }],
+                                    participants: [
+                                        {account: value.participants.map((i) => (
+                                            i
+                                        ))}
+                                        /*
+                                        value.participants.map((i) => (
+                                            {account: i}
+                                        ),)*/
+                                    ],
+                                    /*participants: [
+                                        {account: value.participants}],*/
                                     launcher: {
                                         account: account
                                     }
                                 }
                             }));
+                            
                         }}
                         onCancel={() => {
                             setEventModalVisible(false);

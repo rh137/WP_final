@@ -67,7 +67,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
               //order="true"
             />
           </Form.Item>
-
+          
           <Form.Item
             name="participants" label="選擇參加者："
             rules={[{
@@ -80,7 +80,6 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
               mode="multiple"
               style={{ width: '100%' }}
               placeholder="請加入欲邀請的朋友們"
-              //defaultValue={['china']}
               optionLabelProp="label"
             >
               {friends.map(({account, nickname}) => (
@@ -90,11 +89,9 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
                     </div>
                 </Option>
               ))}
-              
-            
             </Select>
           </Form.Item>
-
+          
         </Form>
       </Modal>
     );
