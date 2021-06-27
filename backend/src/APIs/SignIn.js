@@ -18,18 +18,7 @@ const signIn = async (args) => {
     return wrongPasswordResponse();
   }
 
-  const { nickname, friends, events } = existingUser;
-  return {
-    type: "SignIn",
-    result: {
-      success: true
-    },
-    data: {
-      nickname: nickname,
-      friends: await getFriendObjectsByIds(friends),
-      events: await getEventObjectsByIds(events)
-    }
-  }
+  return signInSuccessResponse(existingUser);
 }
 
 // implementation details
@@ -76,6 +65,20 @@ const wrongPasswordResponse = () => {
     result: {
       success: false,
       errorType: "WRONG_PASSWORD"
+    }
+  }
+}
+const signInSuccessResponse = async (existingUser) => {
+  const { nickname, friends, events } = existingUser;
+  return {
+    type: "SignIn",
+    result: {
+      success: true
+    },
+    data: {
+      nickname: nickname,
+      friends: await getFriendObjectsByIds(friends),
+      events: await getEventObjectsByIds(events)
     }
   }
 }
