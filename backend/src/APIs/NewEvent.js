@@ -142,7 +142,7 @@ const invalidEndTimeResponse = () => {
   }
 }
 const newEventSuccessResponse = async (event) => {
-  const returnedParticipants = Promise.all(
+  const returnedParticipants = await Promise.all(
     event.participants.map(async (_id) => {
       const user = await db.UserModel.findById(_id);
       return {
