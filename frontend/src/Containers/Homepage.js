@@ -205,7 +205,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         <Content className="EventBlock site-layout-background"     
                             style={{padding: 24, marginLeft: "45vh", height:"100vh"}}
                         >
-                            <h1 style={{fontWeight: "bolder"}}>活動總覽</h1>
+                            <h1 style={{fontWeight: "bolder", fontSize: "30px"}}>活動總覽</h1>
                             {(events.length === 0)?(
                                 <p style={{fontSize:18}}>目前尚無參加的活動</p>
                             ):(

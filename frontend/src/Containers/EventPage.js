@@ -1,14 +1,16 @@
 import { useState } from "react";
 import ScheduleSelector from 'react-schedule-selector'
+import moment from "moment";
 import { Layout, Menu,  Row, Col, Button, Divider } from 'antd';
 import {TeamOutlined, UserOutlined, DoubleLeftOutlined} from '@ant-design/icons';
 import AddFriendModal from "../Components/AddFriendModal";
-import TimeTable from "../Components/TimeTable";
+import TimeSheet from "../Components/TimeSheet";
+
 
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const EventPage = ({friends ,setEnterEvent, account, title, description, startDate, endDate, startTime, endTime, participants, launcher, id, setParticipants, server, displayStatus}) => {
+const EventPage = ({setEnterEvent, account, title, description, startDate, endDate, startTime, endTime, participants, launcher, id, setParticipants, server, displayStatus}) => {
   server.onmessage = (m) => {
     onEvent(JSON.parse(m.data));
   };
@@ -41,14 +43,57 @@ const EventPage = ({friends ,setEnterEvent, account, title, description, startDa
   const [editMode, setEditMode] = useState(false);
   const addParticipant = () => setFriendModalVisible(true);
   const closeEvent = () => setEnterEvent(false);
-  const turnEditMode = () => setEditMode(true);
-  const turnViewMode = () => setEditMode(false);
+  const turnEditMode = () => {
+    
+    setEditMode(true);
+  }
+  const turnViewMode = () => {
+    //處理schedule
+    let availableTime = []
+    schedule.map((timeSlot) => {
+      let start = parseFloat(moment(timeSlot).format("HH.mm"));
+      if(start % 1 !== 0){
+        start = start + (0.5 - 0.3);
+      }
+      let end = start + 0.5;
+      availableTime.push({date: moment(timeSlot).format("YYYY_MM_DD"), startTime: start, endTime: end})
+    })
+    console.log(availableTime);
+
+    /*
+    server.send(JSON.stringify({
+      type: "UpdateAvailableTimeSlots",
+      args: { 
+        requesterAccount: account,
+        eventId: id,
+        availableTimeSlots: [{
+            date: String,
+            startTime: Number,
+            endTime: Number
+        }],
+        availableTimeSlots2: [{
+            date: String,
+            timeSlots: [{
+                startTime: Number,
+                endTime: Number
+            }]
+        }],
+      }
+    }));
+    */
+    setEditMode(false);
+  }
 
   const [schedule, setSchedule] = useState([]);             
   const handleChange = newSchedule => {
     setSchedule(newSchedule);
     console.log(schedule);
   }
+
+  const handleMouseOver = newSchedule => {
+    console.log("here");
+  }
+
 
   //for ScheduleSelector numDays
   var difference_in_time = new Date(endDate).getTime() - new Date(startDate).getTime();
@@ -107,8 +152,8 @@ const EventPage = ({friends ,setEnterEvent, account, title, description, startDa
             span={10} 
             style={{padding: 15}}
           >
-            <h1 style={{fontWeight: "bold"}}>{title}</h1>
-            <ul>
+            <h1 style={{fontWeight: "bold", fontSize:"22px"}}>{title}</h1>
+            <ul style={{fontSize: "20px"}}>
               {(description.length === 0)?(null):(<li>Description: {description}</li>)}
               <li>Launcher: {launcher.nickname}</li>
             </ul>
@@ -137,9 +182,9 @@ const EventPage = ({friends ,setEnterEvent, account, title, description, startDa
             </Row>
             <Row style={{marginTop: 20}}>
               {(editMode === true)?(
-                <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh"}} onClick={turnViewMode}>View</Button>
+                <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnViewMode}>View</Button>
               ):(
-                <Button size="large" style={{width: "20vh", marginLeft: "23vh"}} onClick={turnEditMode}>Edit</Button>
+                <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", backgroundColor: "#7845D9", fontSize: "22px"}} onClick={turnEditMode}>Edit</Button>
               )
               }
             </Row>
@@ -147,25 +192,7 @@ const EventPage = ({friends ,setEnterEvent, account, title, description, startDa
 
           <Col span={14} style={{ padding: 15}}>
 
-             
-
-
-
-
-
-            {/*(editMode === true)?(
-              <ScheduleSelector
-                onChange={handleChange}
-                selection={schedule}
-                numDays={days}
-                startDate={startDate}
-                minTime={startTime}
-                maxTime={endTime}
-                hourlyChunks={2}
-                timeFormat={"HH:mm"}
-                hoveredColor={"rgba(89, 154, 242, 1)"}
-              />
-            ):(
+            {(editMode === true)?(
               <ScheduleSelector
                 onChange={handleChange}
                 selection={schedule}
@@ -176,7 +203,21 @@ const EventPage = ({friends ,setEnterEvent, account, title, description, startDa
                 hourlyChunks={2}
                 timeFormat={"HH:mm"}
                 hoveredColor={"rgba(89, 120, 242, 1)"}
-            />)*/
+                
+              />
+            ):(
+              <ScheduleSelector
+                onChange={handleMouseOver}
+                selection={schedule}
+                numDays={days}
+                startDate={startDate}
+                minTime={startTime}
+                maxTime={endTime}
+                hourlyChunks={2}
+                timeFormat={"HH:mm"}
+                hoveredColor={"#B19CD9"}
+                unselectedColor={"#e8deff"}
+            />)
             }
             
           </Col>
