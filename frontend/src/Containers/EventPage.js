@@ -18,7 +18,6 @@ const EventPage = ({friends ,setEnterEvent, account, title, description, startDa
       case 'Invite': {
         const {success} = e.result;
         if(success === true){
-            setParticipants(e.data.newParticipant);
             displayStatus({
                 type: "success",
                 msg: "Invite successfully.",
@@ -76,7 +75,7 @@ const EventPage = ({friends ,setEnterEvent, account, title, description, startDa
           </Menu.Item>
 
           <SubMenu key="sub1" icon={<UserOutlined />} title="Participants">
-            {friends.map(({nickname, account}) => (                           //change to participants(array not object)
+            {participants.map(({nickname, account}) => (                           //change to participants(array not object)
               <Menu.Item key={account}>{nickname}</Menu.Item>
             ))}
           </SubMenu>

@@ -108,7 +108,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     launcher={launcher}
                     id={id}
                     setEnterEvent={setEnterEvent}
-                    setParticipants={participants}
+                    setParticipants={setParticipants}
                     server={server}
                     displayStatus={displayStatus}
                 />
