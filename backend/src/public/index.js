@@ -112,7 +112,19 @@ const getAvailableTimeSlots = () => {
 const updateAvailableTimeSlots = () => {
   server.sendEvent({
     type: "UpdateAvailableTimeSlots",
-    args: {}
+    args: {
+      requesterAccount: arg1.value,
+      eventId: arg2.value,
+      availableTimeSlots: [{
+        date: "2021_07_07",
+        startTime: 12,
+        endTime: 17
+      }, {
+        date: "2021_07_08",
+        startTime: 1,
+        endTime: 4
+      }]
+    }
   })
 }
 const requestWithUnexpectedType = () => {
@@ -151,7 +163,13 @@ const clearEvent = () => {
     type: "ClearEvent"
   })
 }
+const clearTimeSlot = () => {
+  server.sendEvent({
+    type: "ClearTimeSlot"
+  })
+}
 const clearAll = () => {
   clearUser();
   clearEvent();
+  clearTimeSlot();
 }

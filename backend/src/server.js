@@ -18,7 +18,7 @@ app.use(express.static("./src/public/"));
 const { signUp, signIn, newEvent, addFriend, invite,
   getAvailableTimeSlots, updateAvailableTimeSlots,
   handleInvalidRequestTypes } = apis;
-const { clearUser, clearEvent } = apis_dev;
+const { clearUser, clearEvent, clearTimeSlot } = apis_dev;
 
 connectToMongoDB();
 
@@ -39,6 +39,7 @@ wsServer.on("connection", (client) => {
       case "UpdateAvailableTimeSlots": ret = await updateAvailableTimeSlots(args); break;
       case "ClearUser": ret = await clearUser(); break;
       case "ClearEvent": ret = await clearEvent(); break;
+      case "ClearTimeSlot": ret = await clearTimeSlot(); break;
       default: ret = handleInvalidRequestTypes(type);
     }
     client.sendData(ret);
