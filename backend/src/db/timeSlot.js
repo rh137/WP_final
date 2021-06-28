@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const timeSlotSchema = new mongoose.Schema({
   user: { type: mongoose.Types.ObjectId, ref: 'User' },
   event: { type: mongoose.Types.ObjectId, ref: 'Event'},
-  date: Date,
+  date: String,
   startTime: Number,
   endTime: Number
 });

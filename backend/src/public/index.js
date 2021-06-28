@@ -69,8 +69,8 @@ const newEvent = () => {
     args: {
       title: "test title",
       description: "test description",
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: "2021_07_01",
+      endDate: "2021_07_15",
       startTime: 7.5,
       endTime: 21,
       participants: [
