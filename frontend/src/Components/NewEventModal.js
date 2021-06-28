@@ -1,5 +1,4 @@
 import { Modal, Form, Input, DatePicker, TimePicker, Select } from "antd";
-import moment from "moment";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;

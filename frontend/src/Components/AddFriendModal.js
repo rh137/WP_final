@@ -1,7 +1,5 @@
-import { Modal, Form, Select, Input } from "antd";
+import { Modal, Form, Input } from "antd";
 import { UsergroupAddOutlined } from '@ant-design/icons';
-
-const { Option } = Select;
 
 const AddFriendModal = ({visible, onCreate, onCancel}) => {
     const [form] = Form.useForm();

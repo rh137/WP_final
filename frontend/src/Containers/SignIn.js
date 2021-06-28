@@ -115,7 +115,6 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                 visible={modalVisible}
                 onCreate={(value) => {                                  //nickname, account, password
                     console.log(value.nickname, value.account, value.password);
-                    
                     server.send(JSON.stringify({
                         type: "SignUp",
                         args: {
@@ -125,10 +124,7 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                         }
                     }));
                 }}
-                onCancel={() => {
-                    setModalVisible(false);
-                }}
-                
+                onCancel={() => {setModalVisible(false);}}  
             />
         </div>
 

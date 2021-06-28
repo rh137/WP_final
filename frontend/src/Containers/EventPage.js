@@ -1,18 +1,14 @@
 import { useState } from "react";
 import ScheduleSelector from 'react-schedule-selector'
 import { Layout, Menu,  Row, Col, Button, Divider } from 'antd';
-import {
-    TeamOutlined,
-    UserOutlined,
-    DoubleLeftOutlined
-} from '@ant-design/icons';
-
+import {TeamOutlined, UserOutlined, DoubleLeftOutlined} from '@ant-design/icons';
 import AddFriendModal from "../Components/AddFriendModal";
+import TimeTable from "../Components/TimeTable";
 
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const EventPage = ({setEnterEvent, account, title, description, startDate, endDate, startTime, endTime, participants, launcher, id, setParticipants, server, displayStatus}) => {
+const EventPage = ({friends ,setEnterEvent, account, title, description, startDate, endDate, startTime, endTime, participants, launcher, id, setParticipants, server, displayStatus}) => {
   server.onmessage = (m) => {
     onEvent(JSON.parse(m.data));
   };
@@ -26,7 +22,9 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
             displayStatus({
                 type: "success",
                 msg: "Invite successfully.",
-            });         
+            });       
+            let updatedParticipant = [...participants, e.data.newParticipant];
+            setParticipants(updatedParticipant);  
             setFriendModalVisible(false);
         }
         else{
@@ -77,9 +75,10 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
             Back
           </Menu.Item>
 
-          <SubMenu key="sub1" icon={<UserOutlined />} title="Participant">
-            
-            
+          <SubMenu key="sub1" icon={<UserOutlined />} title="Participants">
+            {friends.map(({nickname, account}) => (                           //change to participants(array not object)
+              <Menu.Item key={account}>{nickname}</Menu.Item>
+            ))}
           </SubMenu>
 
           <Menu.Item key="9" icon={<TeamOutlined />} onClick={addParticipant}>
@@ -100,9 +99,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               }
           }));
         }}
-        onCancel={() => {
-            setFriendModalVisible(false);
-        }}
+        onCancel={() => {setFriendModalVisible(false);}}
       />
 
       <Content className=""style={{padding: 24, marginLeft: 200, Height:"100vh", overflow:"scroll"}}>
@@ -150,7 +147,14 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
           </Col>
 
           <Col span={14} style={{ padding: 15}}>
-            {(editMode === true)?(
+
+             
+
+
+
+
+
+            {/*(editMode === true)?(
               <ScheduleSelector
                 onChange={handleChange}
                 selection={schedule}
@@ -173,7 +177,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                 hourlyChunks={2}
                 timeFormat={"HH:mm"}
                 hoveredColor={"rgba(89, 120, 242, 1)"}
-            />)
+            />)*/
             }
             
           </Col>
@@ -183,6 +187,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
     </Layout>
  
     )
+    
   }
 
 export default EventPage;
