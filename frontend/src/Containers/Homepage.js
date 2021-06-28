@@ -151,17 +151,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                             if(value.description === undefined){
                                 value.description = "";
                             }
-                            
-                            //turn XX.3 to XX.5 for ScheduleSelector time format
-                            if (parseFloat(value.time_range[0].format('HH.mm')) % 1 !== 0)
-                                value.time_range[0] = parseFloat(value.time_range[0].format('HH.mm')) + (0.5-0.3);
-                            else
-                                value.time_range[0] = parseFloat(value.time_range[0].format('HH.mm'));
-                            if (parseFloat(value.time_range[1].format('HH.mm')) % 1 !== 0)
-                                value.time_range[1] = parseFloat(value.time_range[1].format('HH.mm')) + (0.5-0.3);
-                            else
-                                value.time_range[1] = parseFloat(value.time_range[1].format('HH.mm'));
-                            
+
                             value.participants.push(account);
 
                             server.send(JSON.stringify({
@@ -171,8 +161,8 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                     description: value.description,
                                     startDate: new Date(value.date_range[0].format('YYYY-MM-DD')),
                                     endDate: new Date(value.date_range[1].format('YYYY-MM-DD')),
-                                    startTime: value.time_range[0],
-                                    endTime: value.time_range[1],
+                                    startTime: parseFloat(value.time_range[0].format('HH.mm')),
+                                    endTime: parseFloat(value.time_range[1].format('HH.mm')),
                                     participants: value.participants.map((accountStr) => ({account: accountStr})),
                                     launcher: {account: account}
                                 }

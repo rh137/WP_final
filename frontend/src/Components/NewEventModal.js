@@ -61,8 +61,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
             {...tailLayout}
           >
             <TimePicker.RangePicker 
-              format={"HH:mm"} 
-              minuteStep={30} 
+              format={"HH:00"} 
               order="false"
             />
           </Form.Item>
