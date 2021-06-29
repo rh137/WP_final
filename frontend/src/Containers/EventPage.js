@@ -5,6 +5,7 @@ import { Layout, Menu,  Row, Col, Button, Divider } from 'antd';
 import {TeamOutlined, UserOutlined, DoubleLeftOutlined} from '@ant-design/icons';
 import AddFriendModal from "../Components/AddFriendModal";
 import ScheduleTable from "../Components/ScheduleTable";
+import { mergeTimeSlots, splitTimeSlots } from '../utils/index'
 
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -43,18 +44,13 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
           msg: e.result.type,
         })
         setTimeSlots(e.result.timeSlots);
-
       }
 
       case 'UpdateAvailableTimeSlots': {
         const {success} = e.result;
-        if(success === true){
-          displayStatus({
-              type: "success",
-              msg: "Saved",
-          }); 
+        if(success === true)
           setEditMode(false);      
-        }
+
         else{
             displayStatus({
                 type: "error",
@@ -67,12 +63,10 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       case 'GetMyAvailableTimeSlots': {
         const {success} = e.result;
         if(success === true){ 
-          let year = parseInt(e.result.date.splice(0,4))
+          /*let year = parseInt(e.result.date.splice(0,4))
           let month = parseInt(e.result.date.splice(5,7)) -1
           let day = parseInt(e.result.date.splice(8))
-
-
-
+        */
           setEditMode(true);      
         }
         else{
@@ -116,8 +110,8 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       availableTime.push({date: moment(timeSlot).format("YYYY-MM-DD"), startTime: start, endTime: end})
     })
     console.log(availableTime);
-
-    /*
+    availableTime = mergeTimeSlots(availableTime);
+    
     server.send(JSON.stringify({
       type: "UpdateAvailableTimeSlots",
       args: { 
@@ -135,7 +129,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       }
     }));
 
-    */
+  
     setEditMode(false);
   }
 
@@ -194,103 +188,103 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         }}
         onCancel={() => {setFriendModalVisible(false);}}
       />
+      <Layout className="site-layout" style={{overflow:"scroll", padding: 30}}>
+        <Content className=""style={{padding: 24, marginLeft: 200, Height:"100vh"}}>
+          <Row style={{backgroundColor: "white"}} >
+            <Col 
+              span={10} 
+              style={{padding: 15}}
+            >
+              <h1 style={{fontWeight: "bold", fontSize:"22px"}}>{title}</h1>
+              <ul style={{fontSize: "20px"}}>
+                {(description.length === 0)?(null):(<li>Description: {description}</li>)}
+                <li>Launcher: {launcher.nickname}</li>
+              </ul>
+              <Row style={{margin: 5, minHeight: "55vh"}}>
+                {(editMode === true)?(
+                  <p></p>
+                ):(
+                  <>
+                    <Col span={5} offset={0}>
+                      <h1>Available</h1>
+                      <ul>
+                        {availableParticipants.map(({account, nickname}) => {
+                          <li key={account}>{nickname}</li>
+                        })}
+                      </ul>
+                    </Col>
+                    <Col offset={6}>
+                      <Divider 
+                        type="vertical" 
+                        style={{backgroundColor: "black",  width: 2, height: "52vh", overflow: "hidden"}} 
+                      />
+                    </Col>
+                    <Col span={5} offset={0.5}>
+                      <h1>Unavailable</h1>
+                      <ul>
+                        {unavailableParticipants.map(({account, nickname}) => {
+                          <li key={account}>{nickname}</li>
+                        })}
+                      </ul>
+                    </Col>
+                  </>
+                )}
+                
+              </Row>
+              <Row style={{marginTop: 20}}>
+                {(editMode === true)?(
+                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnViewMode}>View</Button>
+                ):(
+                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", backgroundColor: "#7845D9", fontSize: "22px", borderColor: "#7845D9"}} onClick={turnEditMode}>Edit</Button>
+                )
+                }
+              </Row>
+            </Col>
 
-      <Content className=""style={{padding: 24, marginLeft: 200, Height:"100vh", overflow:"scroll"}}>
-        <Row style={{backgroundColor: "white"}} >
-          <Col 
-            span={10} 
-            style={{padding: 15}}
-          >
-            <h1 style={{fontWeight: "bold", fontSize:"22px"}}>{title}</h1>
-            <ul style={{fontSize: "20px"}}>
-              {(description.length === 0)?(null):(<li>Description: {description}</li>)}
-              <li>Launcher: {launcher.nickname}</li>
-            </ul>
-            <Row style={{margin: 5, minHeight: "55vh"}}>
+            <Col span={14} style={{ padding: 15}}>
+
               {(editMode === true)?(
-                <p></p>
+                <ScheduleSelector
+                  onChange={handleChange}
+                  selection={schedule}
+                  numDays={days}
+                  startDate={startDate}           //change to  startDate={new Date(Date.parse(startDate))}
+                  minTime={startTime}
+                  maxTime={endTime}
+                  hourlyChunks={2}
+                  timeFormat={"HH:mm"}
+                  hoveredColor={"rgba(89, 120, 242, 1)"}
+                />
               ):(
-                <>
-                  <Col span={5} offset={0}>
-                    <h1>Available</h1>
-                    <ul>
-                      {availableParticipants.map(({account, nickname}) => {
-                        <li key={account}>{nickname}</li>
-                      })}
-                    </ul>
-                  </Col>
-                  <Col offset={6}>
-                    <Divider 
-                      type="vertical" 
-                      style={{backgroundColor: "black",  width: 2, height: "52vh", overflow: "hidden"}} 
-                    />
-                  </Col>
-                  <Col span={5} offset={0.5}>
-                    <h1>Unavailable</h1>
-                    <ul>
-                      {unavailableParticipants.map(({account, nickname}) => {
-                        <li key={account}>{nickname}</li>
-                      })}
-                    </ul>
-                  </Col>
-                </>
-              )}
-              
-            </Row>
-            <Row style={{marginTop: 20}}>
-              {(editMode === true)?(
-                <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnViewMode}>View</Button>
-              ):(
-                <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", backgroundColor: "#7845D9", fontSize: "22px", borderColor: "#7845D9"}} onClick={turnEditMode}>Edit</Button>
+                <ScheduleTable 
+                  startDate={startDate}
+                  endDate={endDate}
+                  startTime={startTime}
+                  endTime={endTime}
+                  timeSlots = {timeSlots}
+                  setAvailableParticipants={setAvailableParticipants}
+                  setUnavailableParticipants={setUnavailableParticipants}
+                />
+                /*
+                <ScheduleSelector
+                  onChange={(newSchedule)=>console.log(newSchedule)}
+                  selection={result}
+                  numDays={days}
+                  startDate={startDate}
+                  minTime={startTime}
+                  maxTime={endTime}
+                  hourlyChunks={2}
+                  timeFormat={"HH:mm"}
+                  hoveredColor={"#B19CD9"}
+                  unselectedColor={"#e8deff"}
+              />*/
               )
               }
-            </Row>
-          </Col>
-
-          <Col span={14} style={{ padding: 15}}>
-
-            {(editMode === true)?(
-              <ScheduleSelector
-                onChange={handleChange}
-                selection={schedule}
-                numDays={days}
-                startDate={startDate}           //change to  startDate={new Date(Date.parse(startDate))}
-                minTime={startTime}
-                maxTime={endTime}
-                hourlyChunks={2}
-                timeFormat={"HH:mm"}
-                hoveredColor={"rgba(89, 120, 242, 1)"}
-              />
-            ):(
-              <ScheduleTable 
-                startDate={startDate}
-                endDate={endDate}
-                startTime={startTime}
-                endTime={endTime}
-                timeSlots = {timeSlots}
-                setAvailableParticipants={setAvailableParticipants}
-                setUnavailableParticipants={setUnavailableParticipants}
-              />
-              /*
-              <ScheduleSelector
-                onChange={(newSchedule)=>console.log(newSchedule)}
-                selection={result}
-                numDays={days}
-                startDate={startDate}
-                minTime={startTime}
-                maxTime={endTime}
-                hourlyChunks={2}
-                timeFormat={"HH:mm"}
-                hoveredColor={"#B19CD9"}
-                unselectedColor={"#e8deff"}
-            />*/
-            )
-            }
-            
-          </Col>
-        </Row>        
-      </Content>
-          
+              
+            </Col>
+          </Row>        
+        </Content>
+        </Layout>  
     </Layout>
  
     )
