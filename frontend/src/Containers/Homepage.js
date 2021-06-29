@@ -129,12 +129,12 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         >
                             <Menu.Item key="Title" style={{cursor: "default"}}><h1>{nickname}'s when2meet</h1></Menu.Item>
                             <SubMenu key="Information" icon={<UserOutlined />} title="個人資訊">
-                                <Menu.Item key="account">Account: {account}</Menu.Item>
+                                <Menu.Item key="account">{nickname}({account})</Menu.Item>
                             </SubMenu>
                             <Menu.Item key="NewEvent" icon={<NotificationOutlined />} onClick={addEvent} >發起活動</Menu.Item>
                             <SubMenu key="FriendList" icon={<TeamOutlined />} title="好友列表">
                                 {friends.map(({account, nickname}) => (
-                                    <Menu.Item key={account}>{nickname}</Menu.Item>
+                                    <Menu.Item key={account}>{nickname}({account})</Menu.Item>
                                 ))}
                             </SubMenu>
                             <Menu.Item key="AddFriend" icon={<UsergroupAddOutlined />} onClick={addFriend}>加好友</Menu.Item>
@@ -224,8 +224,8 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                                     }} >
                                                     <ul>
                                                         {(description.length === 0)?(null):(<li>Description: {description}</li>)}
-                                                        <li>Date: {startDate} ~ {endDate}</li>
-                                                        <li>Launcher: {launcher.nickname}</li>
+                                                        <li>日期： {startDate} ~ {endDate}</li>
+                                                        <li>活動發起人： {launcher.nickname}({launcher.account})</li>
                                                     </ul>
                                                 </Card>
                                             </Col>

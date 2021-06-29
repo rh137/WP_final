@@ -13,8 +13,8 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
     return (
       <Modal
         visible={visible}
-        title="建立活動!"
-        okText="Add" cancelText="Cancel"
+        title="發起活動!"
+        okText="建立" cancelText="取消"
         onOk={() => {
           form.validateFields().then((data) => {
             form.resetFields();
@@ -53,10 +53,10 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
           </Form.Item>
 
           <Form.Item
-            name="time_range" label="選擇時間區間："
+            name="time_range" label="選擇欲投票的活動時間區間："
             rules={[{
               required: true,
-              message: "Error: 請選定投票的時間區間!",
+              message: "Error: 請選定投票的活動時間區間!",
             },]}
             {...tailLayout}
           >

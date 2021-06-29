@@ -164,17 +164,17 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
           style={{fontSize: "18px"}}
         >
           <Menu.Item key="1" icon={<DoubleLeftOutlined />} onClick={closeEvent}>
-            Back
+            返回個人主頁
           </Menu.Item>
 
-          <SubMenu key="sub1" icon={<UserOutlined />} title="Participants">
+          <SubMenu key="sub1" icon={<UserOutlined />} title="活動參加者">
             {participants.map(({nickname, account}) => (                           //change to participants(array not object)
-              <Menu.Item key={account}>{nickname}</Menu.Item>
+              <Menu.Item key={account}>{nickname}({account})</Menu.Item>
             ))}
           </SubMenu>
 
           <Menu.Item key="9" icon={<TeamOutlined />} onClick={addParticipant}>
-            Invite More
+            邀請更多人
           </Menu.Item>
         </Menu>
       </Sider>
@@ -200,10 +200,10 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               span={9} 
               style={{padding: 15}}
             >
-              <h1 style={{fontWeight: "bold", fontSize:"22px"}}>{title}</h1>
+              <h1 style={{fontWeight: "bold", fontSize:"25px"}}>{title}</h1>
               <ul style={{fontSize: "20px"}}>
-                {(description.length === 0)?(null):(<li>Description: {description}</li>)}
-                <li>Launcher: {launcher.nickname}</li>
+                {(description.length === 0)?(null):(<li>活動內容簡述： {description}</li>)}
+                <li>活動發起人： {launcher.nickname}</li>
               </ul>
               <Row style={{margin: 5, minHeight: "55vh"}}>
                 {(editMode === true)?(
@@ -238,9 +238,9 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               </Row>
               <Row style={{marginTop: 20}}>
                 {(editMode === true)?(
-                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnViewMode}>View</Button>
+                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnViewMode}>瀏覽模式</Button>
                 ):(
-                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnEditMode}>Edit</Button>
+                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnEditMode}>編輯模式</Button>
                 )
                 }
               </Row>
