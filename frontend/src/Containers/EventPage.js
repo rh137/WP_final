@@ -37,28 +37,33 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         break;
       }
 
-      case 'GetAvailableTimeSlots': {
-        const {success} = e.result;
-        displayStatus({
-          type: "error",
-          msg: e.result.type,
-        })
-        setTimeSlots(e.result.timeSlots);
+      case 'UpdateAvailableTimeSlots': {
+          const {success} = e.result;     
+          if(success === false){
+              displayStatus({
+                  type: "error",
+                  msg: e.result.errorType,
+              })
+          }
+          break;
       }
 
-      case 'UpdateAvailableTimeSlots': {
+      case 'GetAvailableTimeSlots': {
         const {success} = e.result;
-        if(success === true)
-          setEditMode(false);      
-
+        if(success === false){
+          displayStatus({
+            type: "error",
+            msg: e.result.type,
+          })
+        }
         else{
-            displayStatus({
-                type: "error",
-                msg: e.result.errorType,
-            })
+          setTimeSlots(e.data.timeSlots);
+          console.log(timeSlots)
+          setEditMode(false);
         }
         break;
       }
+      
       //undone
       case 'GetMyAvailableTimeSlots': {
         const {success} = e.result;
@@ -88,7 +93,13 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
   const [editMode, setEditMode] = useState(false);
   const addParticipant = () => setFriendModalVisible(true); 
   const closeEvent = () => setEnterEvent(false);
-  
+  //for ScheduleSelector
+  const [schedule, setSchedule] = useState([]);             
+  const handleChange = newSchedule => {
+    setSchedule(newSchedule);
+    console.log(schedule);
+  }
+
   const turnEditMode = () => {
     server.send(JSON.stringify({
       type: "GetMyAvailableTimeSlots",
@@ -101,6 +112,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
     setEditMode(true);
   }
   const turnViewMode = () => {
+    //UpdateAvailableTimeSlots()
     let availableTime = []                                                //{date, startTime, endTime}
     schedule.map((timeSlot) => {
       let start = parseFloat(moment(timeSlot).format("HH.mm"));           //start time
@@ -109,7 +121,6 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       let end = start + 0.5;                                              //end time
       availableTime.push({date: moment(timeSlot).format("YYYY-MM-DD"), startTime: start, endTime: end})
     })
-    console.log(availableTime);
     availableTime = mergeTimeSlots(availableTime);
     
     server.send(JSON.stringify({
@@ -121,6 +132,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       }
     }));
 
+    //GetAvailableTimeSlots()
     server.send(JSON.stringify({
       type: "GetAvailableTimeSlots",
       args: { 
@@ -128,16 +140,9 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         eventId: id
       }
     }));
-
-  
-    setEditMode(false);
   }
 
-  const [schedule, setSchedule] = useState([]);             
-  const handleChange = newSchedule => {
-    setSchedule(newSchedule);
-    console.log(schedule);
-  }
+
 
   //for ScheduleSelector numDays
   var difference_in_time = new Date(endDate).getTime() - new Date(startDate).getTime();

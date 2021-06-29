@@ -224,7 +224,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                                     }} >
                                                     <ul>
                                                         {(description.length === 0)?(null):(<li>Description: {description}</li>)}
-                                                        <li>Date: {startDate} ~ {endDate}</li>
+                                                        <li>Date: </li>
                                                         <li>Launcher: {launcher.nickname}</li>
                                                     </ul>
                                                 </Card>

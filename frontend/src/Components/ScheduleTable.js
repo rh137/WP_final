@@ -3,14 +3,10 @@ import moment from 'moment';
 import ReactDataSheet from 'react-datasheet';
 // Be sure to include styles at some point, probably during your bootstrapping
 import 'react-datasheet/lib/react-datasheet.css';
+import { splitTimeSlots } from '../utils/index';
 
-const ScheduleTable = ({startDate, endDate, startTime, endTime, setAvailableParticipants, setUnavailableParticipants}) => {         //add timeSlots
-  //for test 
-  const timeSlots = [
-    {date: "2021-06-29", startTime: 9, endTime: 9.5, availableParticipants: [{account: 'irene', nickname: "Irene"}, {account: 'wendy', nickname: "Wendy"}]}
-  ] 
-
-  //get date list
+const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, setAvailableParticipants, setUnavailableParticipants}) => {       
+  //get dates in `YYYY-MM-DD`
   Date.prototype.addDays = function(days) {
     let date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
@@ -25,6 +21,7 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, setAvailablePart
     }
     return dateArray
   }
+  //get time in float
   const getTimes = (startTime, endTime) => {
     let timeArray = [];
     for (let i = startTime; i < endTime; i+=0.5)
@@ -76,20 +73,20 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, setAvailablePart
       else
         arr.push({key: i.key, value: i.participants.length, participants: i.participants, readOnly: true, width: 200})     
     })
-    console.log(arr);
+    //console.log(arr);
     let gridArray = []
     for(let i = 0, j=arr.length; i < j; i+=(date_range.length+1)){
       gridArray.push(arr.slice(i, i+(date_range.length+1)))
     }
     return gridArray;
   }
-
+  timeSlots = splitTimeSlots(timeSlots);
   let date_range = getDates(new Date(Date.parse(startDate)), new Date(Date.parse(endDate)));
   let time_range = getTimes(startTime, endTime);
   let time_list = getTimeFormat(startTime, endTime);
   let key_list = getKey(date_range, time_range, time_list);
   let data_list = getData(key_list, timeSlots);
-  console.log(data_list)
+  //console.log(data_list)
 
   const grid_list = getGrid(data_list);
   const [grid, setGrid] = useState( grid_list )
