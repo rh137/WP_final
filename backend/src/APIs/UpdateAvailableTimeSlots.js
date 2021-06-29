@@ -47,9 +47,6 @@ const updateAvailableTimeSlots = async (args) => {
 // implementation details
 const hasMissingFields = (args) => {
   const { requesterAccount, eventId, availableTimeSlots } = args;
-  console.log(requesterAccount);
-  console.log(eventId);
-  console.log(availableTimeSlots);
   return (!requesterAccount || !eventId || !availableTimeSlots);
 }
 
