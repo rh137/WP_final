@@ -65,7 +65,7 @@ const getDaysByYearAndMonth = (year, month) => {
 }
 function parseDateString(dateString) {
   // dateString: type String, format yyyy_mm_dd
-  const [y, m, d] = dateString.split("_").map(s => parseInt(s, 10))
+  const [y, m, d] = dateString.split("-").map(s => parseInt(s, 10))
   return { y: y, m: m, d: d }
 }
 function getAllDateStringsInRange(startDate, endDate) {
@@ -84,7 +84,7 @@ function getAllDateStringsInRange(startDate, endDate) {
       for (let d = 1; d <= days; d++) {
         if (y === start.y && m === start.m && d < start.d) continue
         if (y === end.y   && m === end.m   && d > end.d) continue
-        ret.push("" + y + "_" + (m < 10 ? "0" : "") + m + "_" + (d < 10 ? "0" : "") + d);
+        ret.push("" + y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d);
       }
     }
   }
