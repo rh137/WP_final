@@ -29,6 +29,8 @@ const onEvent = (e) => {
     console.log(e.data);
   } else if (e.type === "NewEvent") {
     console.log(e.data);
+  } else if (e.type === "GetAvailableTimeSlots") {
+    console.log(e.data);
   }
   alert(alertMsg);
 };
@@ -106,7 +108,10 @@ const invite = () => {
 const getAvailableTimeSlots = () => {
   server.sendEvent({
     type: "GetAvailableTimeSlots",
-    args: {}
+    args: {
+      requesterAccount: arg1.value,
+      eventId: arg2.value,
+    }
   })
 }
 const updateAvailableTimeSlots = () => {
@@ -117,12 +122,12 @@ const updateAvailableTimeSlots = () => {
       eventId: arg2.value,
       availableTimeSlots: [{
         date: "2021_07_07",
-        startTime: 12,
-        endTime: 17
+        startTime: 16,
+        endTime: 18
       }, {
         date: "2021_07_08",
-        startTime: 1,
-        endTime: 4
+        startTime: 5,
+        endTime: 7
       }]
     }
   })
