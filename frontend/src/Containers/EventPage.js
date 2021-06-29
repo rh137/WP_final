@@ -68,9 +68,9 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
     }
 };
 
-  const [timeSlots, setTimeSlots] = useState();
-  const [availableUser, setAvailableUser] = useState([]);
-  const [unavailableUser, setUnavailableUser] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [availableParticipants, setAvailableParticipants] = useState([]);
+  const [unavailableParticipants, setUnavailableParticipants] = useState([]);
   const [friendModalVisible, setFriendModalVisible] = useState(false);
   const [editMode, setEditMode] = useState(true);
   const addParticipant = () => setFriendModalVisible(true);
@@ -199,7 +199,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                   <Col span={5} offset={0}>
                     <h1>Available</h1>
                     <ul>
-                      {availableUser.map(({account, nickname}) => {
+                      {availableParticipants.map(({account, nickname}) => {
                         <li key={account}>{nickname}</li>
                       })}
                     </ul>
@@ -213,7 +213,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                   <Col span={5} offset={0.5}>
                     <h1>Unavailable</h1>
                     <ul>
-                      {unavailableUser.map(({account, nickname}) => {
+                      {unavailableParticipants.map(({account, nickname}) => {
                         <li key={account}>{nickname}</li>
                       })}
                     </ul>
@@ -253,6 +253,8 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                 startTime={startTime}
                 endTime={endTime}
                 timeSlots = {timeSlots}
+                setAvailableParticipants={setAvailableParticipants}
+                setUnavailableParticipants={setUnavailableParticipants}
               />
               /*
               <ScheduleSelector
