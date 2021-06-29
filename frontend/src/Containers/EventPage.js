@@ -197,7 +197,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         <Content className=""style={{padding: 24, marginLeft: 200, Height:"100vh"}}>
           <Row style={{backgroundColor: "white"}} >
             <Col 
-              span={10} 
+              span={9} 
               style={{padding: 15}}
             >
               <h1 style={{fontWeight: "bold", fontSize:"22px"}}>{title}</h1>
@@ -240,13 +240,13 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                 {(editMode === true)?(
                   <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnViewMode}>View</Button>
                 ):(
-                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", backgroundColor: "#7845D9", fontSize: "22px", borderColor: "#7845D9"}} onClick={turnEditMode}>Edit</Button>
+                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnEditMode}>Edit</Button>
                 )
                 }
               </Row>
             </Col>
 
-            <Col span={14} style={{ padding: 15}}>
+            <Col span={14} style={{ padding: 15, alignSelf:"center", overflow:"scroll", marginRight: "0.5vh"}}>
 
               {(editMode === true)?(
                 <ScheduleSelector
@@ -269,20 +269,8 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                   timeSlots = {timeSlots}
                   setAvailableParticipants={setAvailableParticipants}
                   setUnavailableParticipants={setUnavailableParticipants}
+                  
                 />
-                /*
-                <ScheduleSelector
-                  onChange={(newSchedule)=>console.log(newSchedule)}
-                  selection={result}
-                  numDays={days}
-                  startDate={startDate}
-                  minTime={startTime}
-                  maxTime={endTime}
-                  hourlyChunks={2}
-                  timeFormat={"HH:mm"}
-                  hoveredColor={"#B19CD9"}
-                  unselectedColor={"#e8deff"}
-              />*/
               )
               }
               

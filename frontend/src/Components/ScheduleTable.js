@@ -2,7 +2,8 @@ import { useState } from 'react';
 import moment from 'moment';
 import ReactDataSheet from 'react-datasheet';
 // Be sure to include styles at some point, probably during your bootstrapping
-import 'react-datasheet/lib/react-datasheet.css';
+//import 'react-datasheet/lib/react-datasheet.css';
+import '../App.css';
 import { splitTimeSlots } from '../utils/index';
 
 const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, setAvailableParticipants, setUnavailableParticipants}) => {       
@@ -43,7 +44,7 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, setAv
   }
   const getKey = (date_range, time_range, time_list) => {
     let keyArray = [{key: "", participants:""}];
-    date_range.map((date) => keyArray.push({key: date, participants:""}))
+    date_range.map((date) => keyArray.push({key: moment(date).format("M/D"), participants:""}))
     for (let i = 0; i < time_range.length; i++){
       for(let j = 0; j < date_range.length; j++){
         if(j === 0)
@@ -66,12 +67,12 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, setAv
     let arr = []
     data_list.map((i, {participants}) => {
       if(i.key.length < 8)
-        arr.push({key: i.key, value: i.key, readOnly: true, width: 100})
+        arr.push({key: i.key, value: i.key, readOnly: true, width: "100vh"})
       
       else if(i.key.length < 11)
-        arr.push({key: i.key, value: i.key, readOnly: true, width:200 })
+        arr.push({key: i.key, value: i.key, readOnly: true, width: "180vh" })
       else
-        arr.push({key: i.key, value: i.participants.length, participants: i.participants, readOnly: true, width: 200})     
+        arr.push({key: i.key, value: i.participants.length, participants: i.participants, readOnly: true, width: "180vh",  })     
     })
     //console.log(arr);
     let gridArray = []
@@ -101,7 +102,7 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, setAv
         <ReactDataSheet
           data={grid}
           valueRenderer={cell => cell.value}
-          style={{width:100}}
+          style={{backgroundColor: "purple"}}
           onSelect={handleSelected}
         />
     );

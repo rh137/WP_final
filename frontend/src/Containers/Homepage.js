@@ -52,8 +52,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     let updateEvents = [...events, e.data];
                     setEvents(updateEvents);
                     setEventModalVisible(false);
-
-                    
+                    setEnterEvent(true);
                 }
                 else{
                     displayStatus({
@@ -213,18 +212,19 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                                         setLauncher(launcher);
                                                         setID(_id);
                                                         
+                                                        //GetAvailableTimeSlots()
                                                         server.send(JSON.stringify({
                                                             type: "GetAvailableTimeSlots",
                                                             args: { 
                                                               requesterAccount: account,
-                                                              eventId: id
+                                                              eventId: _id
                                                             }
                                                         }));
                                                         setEnterEvent(true);
                                                     }} >
                                                     <ul>
                                                         {(description.length === 0)?(null):(<li>Description: {description}</li>)}
-                                                        <li>Date: </li>
+                                                        <li>Date: {startDate} ~ {endDate}</li>
                                                         <li>Launcher: {launcher.nickname}</li>
                                                     </ul>
                                                 </Card>
