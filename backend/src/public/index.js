@@ -73,8 +73,8 @@ const newEvent = () => {
     args: {
       title: "test title",
       description: "test description",
-      startDate: "2021_07_01",
-      endDate: "2021_07_15",
+      startDate: "2021-07-01",
+      endDate: "2021-07-15",
       startTime: 7.5,
       endTime: 21,
       participants: [
@@ -132,13 +132,9 @@ const updateAvailableTimeSlots = () => {
       requesterAccount: arg1.value,
       eventId: arg2.value,
       availableTimeSlots: [{
-        date: "2021_07_07",
-        startTime: 16,
-        endTime: 18
-      }, {
-        date: "2021_07_08",
-        startTime: 5,
-        endTime: 7
+        date: "2021-07-07",
+        startTime: 17,
+        endTime: 17.5
       }]
     }
   })
