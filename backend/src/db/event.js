@@ -5,8 +5,8 @@ const EventSchema = new mongoose.Schema({
   description: String,
   participants: [{ type: mongoose.Types.ObjectId, ref: "User" }],
   launcher: { type: mongoose.Types.ObjectId, ref: "User" },
-  startDate: Date,
-  endDate: Date,
+  startDate: String,
+  endDate: String,
   startTime: Number,
   endTime: Number
 });

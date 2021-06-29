@@ -29,6 +29,10 @@ const onEvent = (e) => {
     console.log(e.data);
   } else if (e.type === "NewEvent") {
     console.log(e.data);
+  } else if (e.type === "GetAvailableTimeSlots") {
+    console.log(e.data);
+  } else if (e.type === "GetMyAvailableTimeSlots") {
+    console.log(e.data);
   }
   alert(alertMsg);
 };
@@ -69,8 +73,8 @@ const newEvent = () => {
     args: {
       title: "test title",
       description: "test description",
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: "2021-07-01",
+      endDate: "2021-07-15",
       startTime: 7.5,
       endTime: 21,
       participants: [
@@ -106,13 +110,33 @@ const invite = () => {
 const getAvailableTimeSlots = () => {
   server.sendEvent({
     type: "GetAvailableTimeSlots",
-    args: {}
+    args: {
+      requesterAccount: arg1.value,
+      eventId: arg2.value,
+    }
+  })
+}
+const getMyAvailableTimeSlots = () => {
+  server.sendEvent({
+    type: "GetMyAvailableTimeSlots",
+    args: {
+      requesterAccount: arg1.value,
+      eventId: arg2.value,
+    }
   })
 }
 const updateAvailableTimeSlots = () => {
   server.sendEvent({
     type: "UpdateAvailableTimeSlots",
-    args: {}
+    args: {
+      requesterAccount: arg1.value,
+      eventId: arg2.value,
+      availableTimeSlots: [{
+        date: "2021-07-07",
+        startTime: 17,
+        endTime: 17.5
+      }]
+    }
   })
 }
 const requestWithUnexpectedType = () => {
@@ -151,7 +175,13 @@ const clearEvent = () => {
     type: "ClearEvent"
   })
 }
+const clearTimeSlot = () => {
+  server.sendEvent({
+    type: "ClearTimeSlot"
+  })
+}
 const clearAll = () => {
   clearUser();
   clearEvent();
+  clearTimeSlot();
 }
