@@ -36,7 +36,6 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         break;
       }
 
-
       case 'GetAvailableTimeSlots': {
         const {success} = e.result;
         displayStatus({
@@ -64,29 +63,56 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         }
         break;
       }
+      //undone
+      case 'GetMyAvailableTimeSlots': {
+        const {success} = e.result;
+        if(success === true){ 
+          let year = parseInt(e.result.date.splice(0,4))
+          let month = parseInt(e.result.date.splice(5,7)) -1
+          let day = parseInt(e.result.date.splice(8))
+
+
+
+          setEditMode(true);      
+        }
+        else{
+            displayStatus({
+                type: "error",
+                msg: e.result.errorType,
+            })
+        }
+        break;
+      }
 
     }
 };
 
-  const [timeSlots, setTimeSlots] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([]);                                   //from getAvailableTime()
   const [availableParticipants, setAvailableParticipants] = useState([]);
   const [unavailableParticipants, setUnavailableParticipants] = useState([]);
-  const [friendModalVisible, setFriendModalVisible] = useState(false);
-  const [editMode, setEditMode] = useState(true);
-  const addParticipant = () => setFriendModalVisible(true);
+  const [friendModalVisible, setFriendModalVisible] = useState(false);               //for invite()
+  const [editMode, setEditMode] = useState(false);
+  const addParticipant = () => setFriendModalVisible(true); 
   const closeEvent = () => setEnterEvent(false);
+  
   const turnEditMode = () => {
+    server.send(JSON.stringify({
+      type: "GetMyAvailableTimeSlots",
+      args: { 
+        requesterAccount: account,
+        eventId: id,
+      }
+    }));
     
     setEditMode(true);
   }
   const turnViewMode = () => {
-    let availableTime = []
+    let availableTime = []                                                //{date, startTime, endTime}
     schedule.map((timeSlot) => {
-      let start = parseFloat(moment(timeSlot).format("HH.mm"));
-      if(start % 1 !== 0){
+      let start = parseFloat(moment(timeSlot).format("HH.mm"));           //start time
+      if(start % 1 !== 0)
         start = start + (0.5 - 0.3);
-      }
-      let end = start + 0.5;
+      let end = start + 0.5;                                              //end time
       availableTime.push({date: moment(timeSlot).format("YYYY-MM-DD"), startTime: start, endTime: end})
     })
     console.log(availableTime);
@@ -97,18 +123,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       args: { 
         requesterAccount: account,
         eventId: id,
-        availableTimeSlots: [{
-            date: String,
-            startTime: Number,
-            endTime: Number
-        }],
-        availableTimeSlots2: [{
-            date: String,
-            timeSlots: [{
-                startTime: Number,
-                endTime: Number
-            }]
-        }],
+        availableTimeSlots: availableTime,
       }
     }));
 

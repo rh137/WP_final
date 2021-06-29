@@ -52,6 +52,14 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     let updateEvents = [...events, e.data];
                     setEvents(updateEvents);
                     setEventModalVisible(false);
+
+                    server.send(JSON.stringify({
+                        type: "GetAvailableTimeSlots",
+                        args: { 
+                          requesterAccount: account,
+                          eventId: id
+                        }
+                    }));
                     setEnterEvent(true);
                 }
                 else{
@@ -156,8 +164,8 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                 args: { 
                                     title: value.title,
                                     description: value.description,
-                                    startDate: value.date_range[0].format('YYYY-MM-DD'),            //change to .format("YYYY-MM-DD")
-                                    endDate: value.date_range[1].format('YYYY-MM-DD'),              //change to .format("YYYY-MM-DD")
+                                    startDate: value.date_range[0].format('YYYY-MM-DD'),           
+                                    endDate: value.date_range[1].format('YYYY-MM-DD'),              
                                     startTime: parseFloat(value.time_range[0].format('HH.mm')),
                                     endTime: parseFloat(value.time_range[1].format('HH.mm')),
                                     participants: value.participants.map((accountStr) => ({account: accountStr})),
@@ -211,6 +219,14 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                                         setParticipants(participants);
                                                         setLauncher(launcher);
                                                         setID(_id);
+                                                        
+                                                        server.send(JSON.stringify({
+                                                            type: "GetAvailableTimeSlots",
+                                                            args: { 
+                                                              requesterAccount: account,
+                                                              eventId: id
+                                                            }
+                                                        }));
                                                         setEnterEvent(true);
                                                     }} >
                                                     <ul>
