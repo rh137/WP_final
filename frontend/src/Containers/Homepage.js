@@ -10,7 +10,6 @@ const {Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
 const Homepage = ({account, nickname, friends, events, setFriends, setEvents, server, displayStatus}) => {
-    console.log(events)
     server.onmessage = (m) => {
         onEvent(JSON.parse(m.data));
     };
@@ -65,7 +64,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
             }
         }
     }
-        
+    
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState();
@@ -148,9 +147,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         onCreate={(value) => {                           
                             console.log(value);
 
-                            if(value.description === undefined){
-                                value.description = "";
-                            }
+                            if(value.description === undefined) { value.description = ""; }
 
                             value.participants.push(account);
 
@@ -159,8 +156,8 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                 args: { 
                                     title: value.title,
                                     description: value.description,
-                                    startDate: new Date(value.date_range[0].format('YYYY-MM-DD')),
-                                    endDate: new Date(value.date_range[1].format('YYYY-MM-DD')),
+                                    startDate: value.date_range[0].format('YYYY-MM-DD'),            //change to .format("YYYY-MM-DD")
+                                    endDate: value.date_range[1].format('YYYY-MM-DD'),              //change to .format("YYYY-MM-DD")
                                     startTime: parseFloat(value.time_range[0].format('HH.mm')),
                                     endTime: parseFloat(value.time_range[1].format('HH.mm')),
                                     participants: value.participants.map((accountStr) => ({account: accountStr})),
