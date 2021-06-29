@@ -43,7 +43,7 @@ async function parseTimeSlots (timeSlots) {
         })
       }
       // remove ts.account from currentUsers use filter
-      currentUsers = currentUsers.filter(obj => obj.account !== ts.account);
+      currentUsers = currentUsers.filter(obj => obj.account !== ts.user.account);
 
       if (startTimeStack.length === 0) {
         currentStartTime = -1  // restart
