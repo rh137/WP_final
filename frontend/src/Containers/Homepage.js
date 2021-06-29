@@ -53,14 +53,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     setEvents(updateEvents);
                     setEventModalVisible(false);
 
-                    server.send(JSON.stringify({
-                        type: "GetAvailableTimeSlots",
-                        args: { 
-                          requesterAccount: account,
-                          eventId: id
-                        }
-                    }));
-                    setEnterEvent(true);
+                    
                 }
                 else{
                     displayStatus({
@@ -231,7 +224,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                                     }} >
                                                     <ul>
                                                         {(description.length === 0)?(null):(<li>Description: {description}</li>)}
-                                                        <li>Date: {(startDate.length > 10)? startDate.slice(0,10):null} ~ {(endDate.length > 10)? endDate.slice(0,10):null}</li>
+                                                        <li>Date: {startDate} ~ {endDate}</li>
                                                         <li>Launcher: {launcher.nickname}</li>
                                                     </ul>
                                                 </Card>
