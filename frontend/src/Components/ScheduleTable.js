@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import moment from 'moment';
 import ReactDataSheet from 'react-datasheet';
-// Be sure to include styles at some point, probably during your bootstrapping
-//import 'react-datasheet/lib/react-datasheet.css';
 import '../App.css';
 import { splitTimeSlots } from '../utils/index';
 
-const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, setAvailableParticipants, setUnavailableParticipants}) => {       
+const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, participants, setAvailableParticipants, setUnavailableParticipants}) => {       
   //get dates in `YYYY-MM-DD`
   Date.prototype.addDays = function(days) {
     let date = new Date(this.valueOf());
@@ -65,16 +63,18 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, setAv
 
   const getGrid = (data_list) => {
     let arr = []
-    data_list.map((i, {participants}) => {
+    data_list.map((i) => {
       if(i.key.length < 8)
-        arr.push({key: i.key, value: i.key, readOnly: true, width: "100vh"})
+        arr.push({key: i.key, value: i.key, participants: null, readOnly: true, width: "100vh"})
       
       else if(i.key.length < 11)
-        arr.push({key: i.key, value: i.key, readOnly: true, width: "180vh" })
+        arr.push({key: i.key, value: i.key, participants: null, readOnly: true, width: "180vh" })
+      else if(i.participants.length === 0)
+        arr.push({key: i.key, value: i.participants.length, participants: null, readOnly: true, width: "180vh"})
       else
-        arr.push({key: i.key, value: i.participants.length, participants: i.participants, readOnly: true, width: "180vh",  })     
+        arr.push({key: i.key, value: i.participants.length, participants: i.participants, readOnly: true, width: "180vh"})     
     })
-    //console.log(arr);
+
     let gridArray = []
     for(let i = 0, j=arr.length; i < j; i+=(date_range.length+1)){
       gridArray.push(arr.slice(i, i+(date_range.length+1)))
@@ -87,16 +87,22 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, setAv
   let time_list = getTimeFormat(startTime, endTime);
   let key_list = getKey(date_range, time_range, time_list);
   let data_list = getData(key_list, timeSlots);
-  //console.log(data_list)
 
   const grid_list = getGrid(data_list);
   const [grid, setGrid] = useState( grid_list )
 
+  //Set Available/Unavailable Participants
   const handleSelected = (cell) =>{
-    console.log(cell);
-    console.log(grid[cell.start.i][cell.start.j])
+    if(grid[cell.start.i][cell.start.j].participants !== null){
+      setAvailableParticipants(grid[cell.start.i][cell.start.j].participants);
+      //set unavailableParticipants()
+      
+    }
+    else{
+      setAvailableParticipants([""]);
+      setUnavailableParticipants(participants);
+    }
   }
-
 
     return (
         <ReactDataSheet

@@ -58,7 +58,6 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         }
         else{
           setTimeSlots(e.data.timeSlots);
-          console.log(timeSlots)
           setEditMode(false);
         }
         break;
@@ -122,6 +121,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       availableTime.push({date: moment(timeSlot).format("YYYY-MM-DD"), startTime: start, endTime: end})
     })
     availableTime = mergeTimeSlots(availableTime);
+    console.log(availableTime)
     
     server.send(JSON.stringify({
       type: "UpdateAvailableTimeSlots",
@@ -141,8 +141,6 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       }
     }));
   }
-
-
 
   //for ScheduleSelector numDays
   var difference_in_time = new Date(endDate).getTime() - new Date(startDate).getTime();
@@ -210,26 +208,37 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                   <p></p>
                 ):(
                   <>
-                    <Col span={5} offset={0}>
+                    <Col span={10} offset={0}>
                       <h1>Available</h1>
+
                       <ul>
-                        {availableParticipants.map(({account, nickname}) => {
-                          <li key={account}>{nickname}</li>
-                        })}
+                      {availableParticipants.map(({nickname, account}) => (
+                        (account !== undefined)? (
+                          <li key={account}>{nickname}({account})</li>
+                        ):(
+                          <p>這個時段大家都沒空!</p>
+                        )                         
+                        
+                      ))}
                       </ul>
+
                     </Col>
-                    <Col offset={6}>
+                    <Col >
                       <Divider 
                         type="vertical" 
                         style={{backgroundColor: "black",  width: 2, height: "52vh", overflow: "hidden"}} 
                       />
                     </Col>
-                    <Col span={5} offset={0.5}>
+                    <Col span={10} offset={0.5}>
                       <h1>Unavailable</h1>
                       <ul>
-                        {unavailableParticipants.map(({account, nickname}) => {
-                          <li key={account}>{nickname}</li>
-                        })}
+                        {unavailableParticipants.map(({nickname, account}) => (
+                          (account !== undefined)? (
+                            <li key={account}>{nickname}({account})</li>
+                          ):(
+                            null
+                          )
+                        ))}
                       </ul>
                     </Col>
                   </>
@@ -246,7 +255,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               </Row>
             </Col>
 
-            <Col span={14} style={{ padding: 15, alignSelf:"center", overflow:"scroll", marginRight: "0.5vh"}}>
+            <Col span={14} style={{ padding: 15, alignSelf:"center", marginRight: "0.5vh"}}>
 
               {(editMode === true)?(
                 <ScheduleSelector
@@ -267,12 +276,12 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                   startTime={startTime}
                   endTime={endTime}
                   timeSlots = {timeSlots}
+                  participants = {participants}
                   setAvailableParticipants={setAvailableParticipants}
                   setUnavailableParticipants={setUnavailableParticipants}
                   
                 />
-              )
-              }
+              )}
               
             </Col>
           </Row>        

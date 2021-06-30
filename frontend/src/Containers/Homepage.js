@@ -200,7 +200,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                     <Row gutter={16} style={{marginTop: 20}}>
                                         {i.map(({title, description, startDate, endDate, startTime, endTime, participants, launcher, _id}, j) => (
                                             <Col span={12}>
-                                                <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh", cursor:"pointer"}} key={_id} 
+                                                <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh",fontSize:"16px", cursor:"pointer"}} key={_id} hoverable={true}
                                                     onClick={()=>{
                                                         setTitle(title);
                                                         setDescription(description);
@@ -211,7 +211,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                                         setParticipants(participants);
                                                         setLauncher(launcher);
                                                         setID(_id);
-                                                        
+
                                                         //GetAvailableTimeSlots()
                                                         server.send(JSON.stringify({
                                                             type: "GetAvailableTimeSlots",
