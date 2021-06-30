@@ -103,7 +103,7 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                         prefix={<LockOutlined className="site-form-item-icon" />}
                         iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                         type="password"
-                        placeholder="請輸入您的密碼！"
+                        placeholder="請輸入您的密碼"
                         size="large"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}

@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import moment from 'moment';
 import ReactDataSheet from 'react-datasheet';
 import '../App.css';
 import { splitTimeSlots } from '../utils/index';
 
 const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, participants, setAvailableParticipants, setUnavailableParticipants}) => {       
+  console.log("ScheduleTable: ");
+  console.log(timeSlots)
   //get dates in `YYYY-MM-DD`
   Date.prototype.addDays = function(days) {
     let date = new Date(this.valueOf());
@@ -81,16 +83,29 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, parti
     }
     return gridArray;
   }
+  //const [grid, setGrid] = useState([])
   timeSlots = splitTimeSlots(timeSlots);
   let date_range = getDates(new Date(Date.parse(startDate)), new Date(Date.parse(endDate)));
+  
   let time_range = getTimes(startTime, endTime);
+
   let time_list = getTimeFormat(startTime, endTime);
   let key_list = getKey(date_range, time_range, time_list);
   let data_list = getData(key_list, timeSlots);
 
-  const grid_list = getGrid(data_list);
-  const [grid, setGrid] = useState( grid_list )
+  let grid_list = getGrid(data_list);
 
+  const [grid, setGrid] = useState(grid_list);
+  console.log(grid)
+  /*
+  const [grid, setGrid] = useState([]);
+  useEffect(()=>{
+    if(grid_list !== grid){
+      setGrid(grid_list)
+    }
+  },[])
+*/
+  
   //Set Available/Unavailable Participants
   const handleSelected = (cell) =>{
     if(grid[cell.start.i][cell.start.j].participants !== null){
@@ -107,7 +122,10 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, parti
     }
     else{
       setAvailableParticipants([""]);
-      setUnavailableParticipants(participants);
+      if(cell.start.i !==0 && cell.start.j !== 0)
+        setUnavailableParticipants(participants);
+      else
+        setUnavailableParticipants([""]);
     }
   }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ScheduleSelector from 'react-schedule-selector'
 import moment from "moment";
 import { Layout, Menu,  Row, Col, Button, Divider } from 'antd';
@@ -45,6 +45,12 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                   msg: e.result.errorType,
               })
           }
+          else{
+            displayStatus({
+              type: "success",
+              msg: "saved",
+          })
+          }
           break;
       }
 
@@ -58,8 +64,9 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         }
         else{
           setTimeSlots(e.data.timeSlots);
-          setMyTimeSlots([]);
+          console.log(timeSlots);
           setEditMode(false);
+          setMyTimeSlots([]);
         }
         break;
       }
@@ -68,8 +75,8 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         const {success} = e.result;
         if(success === true){ 
           let timeSlots = splitTimeSlots(e.data.availableTimeSlots);
-          console.log("timeSlots(split): " + timeSlots);
           myTimeSlotsUpdate(timeSlots);
+          setTimeSlots([]);
           setEditMode(true);      
         }
         else{
@@ -82,13 +89,14 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       }
     }
 };
-  
+
   const [timeSlots, setTimeSlots] = useState([]);                                   //from GetAvailableTimeSlots
   const [myTimeSlots, setMyTimeSlots] = useState([]);                               //for ScheduleSelector (put myTimeSlots)
   const [availableParticipants, setAvailableParticipants] = useState([]);
   const [unavailableParticipants, setUnavailableParticipants] = useState([]);                                 
   const [friendModalVisible, setFriendModalVisible] = useState(false);               //for invite()
   const [editMode, setEditMode] = useState(false);
+  const [saved, setSaved] = useState(false);                                          //onClick save or not
 
   const addParticipant = () => setFriendModalVisible(true); 
   const closeEvent = () => setEnterEvent(false);                                     //back to Homepage
@@ -106,7 +114,6 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
           minute = 30;
 
         let date = new Date(year, month, day, hour, minute);
-        console.log("date" + date);
         update_timeSlot.push(date);
       })
       setMyTimeSlots(update_timeSlot);
@@ -114,9 +121,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
 
   //for ScheduleSelector
   const handleChange = newTimeSlot => {
-    console.log(newTimeSlot)
     setMyTimeSlots(newTimeSlot);
-    console.log("myTimeSlots: " + myTimeSlots);
   }
 
   const turnEditMode = () => {
@@ -127,10 +132,31 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         eventId: id,
       }
     }));
-    setEditMode(true);
+    setSaved(false)
   }
 
   const turnViewMode = () => {
+    if(saved !== true){
+      setSaved(false);
+      displayStatus({
+        type: "error",
+        msg: "切換模式前請先儲存！",
+      })
+    }
+    else{
+      //GetAvailableTimeSlots()
+      server.send(JSON.stringify({
+        type: "GetAvailableTimeSlots",
+        args: { 
+          requesterAccount: account,
+          eventId: id
+        }
+      }));
+    }
+
+  }
+
+  const updateTimeSlot = () => {
     //UpdateAvailableTimeSlots()
     let availableTime = []                                                //{date, startTime, endTime}
     myTimeSlots.map((timeSlot) => {
@@ -141,8 +167,6 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       availableTime.push({date: moment(timeSlot).format("YYYY-MM-DD"), startTime: start, endTime: end})
     })
     availableTime = mergeTimeSlots(availableTime);
-    console.log(availableTime)
-    
     server.send(JSON.stringify({
       type: "UpdateAvailableTimeSlots",
       args: { 
@@ -151,15 +175,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         availableTimeSlots: availableTime,
       }
     }));
-
-    //GetAvailableTimeSlots()
-    server.send(JSON.stringify({
-      type: "GetAvailableTimeSlots",
-      args: { 
-        requesterAccount: account,
-        eventId: id
-      }
-    }));
+    setSaved(true);
   }
 
   //for ScheduleSelector numDays
@@ -167,6 +183,11 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
   var difference_in_days = difference_in_time / (1000*3600*24);
   const days = difference_in_days + 1;
 
+  //button css
+  const tailLayout = {
+    wrapperCol: { offset: 4, span: 16 },
+  };
+  
     return(
       <Layout className="App-homepage" style={{ minHeight: '100vh' }}>
       <Sider 
@@ -216,13 +237,13 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                   <p></p>
                 ):(
                   <>
-                    <Col span={10} offset={0}>
+                    <Col span={10} offset={1}>
                       <h1>Available</h1>
 
                       <ul>
                       {availableParticipants.map(({nickname, account}) => (
                         (account !== undefined)? (
-                          <li key={account}>{nickname}({account})</li>):(<li>這個時段大家都沒空!</li>)                         
+                          <li key={account}>{nickname}({account})</li>):(null)                         
                       ))}
                       </ul>
 
@@ -247,9 +268,9 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               </Row>
               <Row style={{marginTop: 20}}>
                 {(editMode === true)?(
-                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnViewMode}>瀏覽模式</Button>
+                  <Button type="primary" size="large" style={{ width: "15vh", marginLeft: "15vh", fontSize: "22px"}} onClick={turnViewMode}>切換瀏覽</Button>
                 ):(
-                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "23vh", fontSize: "22px"}} onClick={turnEditMode}>編輯模式</Button>
+                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "15vh", fontSize: "22px"}} onClick={turnEditMode}>切換編輯</Button>
                 )
                 }
               </Row>
@@ -258,17 +279,20 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
             <Col span={14} style={{ padding: 15, alignSelf:"center", marginRight: "0.5vh"}}>
 
               {(editMode === true)?(
-                <ScheduleSelector
-                  onChange={handleChange}
-                  selection={myTimeSlots}
-                  numDays={days}
-                  startDate={startDate}           //change to  startDate={new Date(Date.parse(startDate))}
-                  minTime={startTime}
-                  maxTime={endTime}
-                  hourlyChunks={2}
-                  timeFormat={"HH:mm"}
-                  hoveredColor={"rgba(89, 120, 242, 1)"}
-                />
+                <>
+                  <ScheduleSelector
+                    onChange={handleChange}
+                    selection={myTimeSlots}
+                    numDays={days}
+                    startDate={startDate}           //change to  startDate={new Date(Date.parse(startDate))}
+                    minTime={startTime}
+                    maxTime={endTime}
+                    hourlyChunks={2}
+                    timeFormat={"HH:mm"}
+                    hoveredColor={"rgba(89, 120, 242, 1)"}
+                  />
+                  <Button  style={{width: "15vh", height: "4.5vh", marginTop: "2vh", marginLeft: "5vh", fontSize: "22px"}} onClick={updateTimeSlot}>儲存</Button>
+                </>
               ):(
                 <ScheduleTable 
                   startDate={startDate}
