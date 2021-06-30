@@ -10,5 +10,8 @@
     "start": "./node_modules/.bin/babel-node ./server.js --es-module-specifier-resolution=node",
     "build": "cd frontend/ && react-scripts build",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && cd backend/ && yarn install && cd ../frontend/ && yarn install && yarn build && cd .."
+  },
+  "dependencies": {
+    "@babel/node": "^7.14.7"
   }
 }
