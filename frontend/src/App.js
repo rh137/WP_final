@@ -1,10 +1,11 @@
 import './App.css';
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import { message } from 'antd';
 import SignIn from "./Containers/SignIn";
 import Homepage from "./Containers/Homepage";
 
-const server = new WebSocket('ws://localhost:5000');
+let HOST = window.location.origin.replace(/^http/, 'ws')
+let server = new WebSocket(HOST);
 
 function App() {
   const [signedIn, setSignedIn] = useState(false);

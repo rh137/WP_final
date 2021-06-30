@@ -1,4 +1,4 @@
-import { Modal, Form, Input } from "antd";
+import React, { Modal, Form, Input } from "antd";
 
 const SignUpModal = ({visible, onCreate, onCancel}) => {
     const [form] = Form.useForm();
