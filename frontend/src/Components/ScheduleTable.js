@@ -95,8 +95,15 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, parti
   const handleSelected = (cell) =>{
     if(grid[cell.start.i][cell.start.j].participants !== null){
       setAvailableParticipants(grid[cell.start.i][cell.start.j].participants);
+
       //set unavailableParticipants()
-      
+      let unavailableArray = participants;
+      grid[cell.start.i][cell.start.j].participants.map(({account}) => {
+        unavailableArray=(unavailableArray.filter(function(participant){
+          return participant.account !== account;
+        }))
+      })
+      setUnavailableParticipants(unavailableArray);
     }
     else{
       setAvailableParticipants([""]);
@@ -108,7 +115,6 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, parti
         <ReactDataSheet
           data={grid}
           valueRenderer={cell => cell.value}
-          style={{backgroundColor: "purple"}}
           onSelect={handleSelected}
         />
     );

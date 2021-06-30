@@ -39,7 +39,6 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                 setFriends(e.data.friends);
                 setEvents(e.data.events);
                 setSignedIn(true);
-                console.log(e.data.friends)
             }
             else{
                 displayStatus({

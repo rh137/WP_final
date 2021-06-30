@@ -216,7 +216,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                         (account !== undefined)? (
                           <li key={account}>{nickname}({account})</li>
                         ):(
-                          <p>這個時段大家都沒空!</p>
+                          <li>這個時段大家都沒空!</li>
                         )                         
                         
                       ))}
