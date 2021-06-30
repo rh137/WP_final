@@ -58,19 +58,18 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         }
         else{
           setTimeSlots(e.data.timeSlots);
+          setMyTimeSlots([]);
           setEditMode(false);
         }
         break;
       }
       
-      //undone
       case 'GetMyAvailableTimeSlots': {
         const {success} = e.result;
         if(success === true){ 
-          /*let year = parseInt(e.result.date.splice(0,4))
-          let month = parseInt(e.result.date.splice(5,7)) -1
-          let day = parseInt(e.result.date.splice(8))
-        */
+          let timeSlots = splitTimeSlots(e.data.availableTimeSlots);
+          console.log("timeSlots(split): " + timeSlots);
+          myTimeSlotsUpdate(timeSlots);
           setEditMode(true);      
         }
         else{
@@ -81,22 +80,43 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         }
         break;
       }
-
     }
 };
-
-  const [timeSlots, setTimeSlots] = useState([]);                                   //from getAvailableTime()
+  
+  const [timeSlots, setTimeSlots] = useState([]);                                   //from GetAvailableTimeSlots
+  const [myTimeSlots, setMyTimeSlots] = useState([]);                               //for ScheduleSelector (put myTimeSlots)
   const [availableParticipants, setAvailableParticipants] = useState([]);
-  const [unavailableParticipants, setUnavailableParticipants] = useState([]);
+  const [unavailableParticipants, setUnavailableParticipants] = useState([]);                                 
   const [friendModalVisible, setFriendModalVisible] = useState(false);               //for invite()
   const [editMode, setEditMode] = useState(false);
+
   const addParticipant = () => setFriendModalVisible(true); 
-  const closeEvent = () => setEnterEvent(false);
+  const closeEvent = () => setEnterEvent(false);                                     //back to Homepage
+  const myTimeSlotsUpdate = (timeSlots) => {                                         //for setMyTimeSlots(): change to type Date
+      let update_timeSlot = [];
+      timeSlots.map((timeSlot) => {
+        //get year, month, date in Int
+        let year = parseInt(timeSlot.date.slice(0,4));
+        let month = parseInt(timeSlot.date.slice(5,7)) - 1;
+        let day = parseInt(timeSlot.date.slice(8,10));
+        //get hour, minute in Int
+        let hour = parseInt(timeSlot.startTime / 1);
+        let minute = 0;
+        if(timeSlot.startTime % 1 !== 0)
+          minute = 30;
+
+        let date = new Date(year, month, day, hour, minute);
+        console.log("date" + date);
+        update_timeSlot.push(date);
+      })
+      setMyTimeSlots(update_timeSlot);
+  }
+
   //for ScheduleSelector
-  const [schedule, setSchedule] = useState([]);             
-  const handleChange = newSchedule => {
-    setSchedule(newSchedule);
-    console.log(schedule);
+  const handleChange = newTimeSlot => {
+    console.log(newTimeSlot)
+    setMyTimeSlots(newTimeSlot);
+    console.log("myTimeSlots: " + myTimeSlots);
   }
 
   const turnEditMode = () => {
@@ -107,13 +127,13 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         eventId: id,
       }
     }));
-    
     setEditMode(true);
   }
+
   const turnViewMode = () => {
     //UpdateAvailableTimeSlots()
     let availableTime = []                                                //{date, startTime, endTime}
-    schedule.map((timeSlot) => {
+    myTimeSlots.map((timeSlot) => {
       let start = parseFloat(moment(timeSlot).format("HH.mm"));           //start time
       if(start % 1 !== 0)
         start = start + (0.5 - 0.3);
@@ -150,36 +170,24 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
     return(
       <Layout className="App-homepage" style={{ minHeight: '100vh' }}>
       <Sider 
-        style={{
-          overflow: 'auto',
-          position: 'fixed',
-          height: "100vh",
-          left: 0,
-          backgroundColor: "white",
-      }}>
-        <Menu  
-          mode="inline"
-          style={{fontSize: "18px"}}
-        >
-          <Menu.Item key="1" icon={<DoubleLeftOutlined />} onClick={closeEvent}>
-            返回個人主頁
-          </Menu.Item>
+        style={{ overflow: 'auto', position: 'fixed', height: "100vh", left: 0, backgroundColor: "white",}}>
+        <Menu mode="inline"  style={{fontSize: "18px"}}>
+          <Menu.Item key="1" icon={<DoubleLeftOutlined />} onClick={closeEvent}>返回個人主頁</Menu.Item>
 
-          <SubMenu key="sub1" icon={<UserOutlined />} title="活動參加者">
-            {participants.map(({nickname, account}) => (                           //change to participants(array not object)
+          <SubMenu key="sub1" icon={<UserOutlined />} title={`活動參加者(${participants.length})`}>
+            {participants.map(({nickname, account}) => (                           
               <Menu.Item key={account}>{nickname}({account})</Menu.Item>
             ))}
           </SubMenu>
 
-          <Menu.Item key="9" icon={<TeamOutlined />} onClick={addParticipant}>
-            邀請更多人
-          </Menu.Item>
+          <Menu.Item key="9" icon={<TeamOutlined />} onClick={addParticipant}>邀請更多人</Menu.Item>
         </Menu>
       </Sider>
       
       <AddFriendModal
         visible={friendModalVisible}
         onCreate={(value) => {
+          //Invite()
             server.send(JSON.stringify({
               type: "Invite",
               args: {
@@ -200,7 +208,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
             >
               <h1 style={{fontWeight: "bold", fontSize:"25px"}}>{title}</h1>
               <ul style={{fontSize: "20px"}}>
-                {(description.length === 0)?(null):(<li>活動內容簡述： {description}</li>)}
+                {(description.length === 0)?(null):(<li>活動內容： {description}</li>)}
                 <li>活動發起人： {launcher.nickname}</li>
               </ul>
               <Row style={{margin: 5, minHeight: "55vh"}}>
@@ -214,11 +222,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                       <ul>
                       {availableParticipants.map(({nickname, account}) => (
                         (account !== undefined)? (
-                          <li key={account}>{nickname}({account})</li>
-                        ):(
-                          <li>這個時段大家都沒空!</li>
-                        )                         
-                        
+                          <li key={account}>{nickname}({account})</li>):(<li>這個時段大家都沒空!</li>)                         
                       ))}
                       </ul>
 
@@ -233,11 +237,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                       <h1>Unavailable</h1>
                       <ul>
                         {unavailableParticipants.map(({nickname, account}) => (
-                          (account !== undefined)? (
-                            <li key={account}>{nickname}({account})</li>
-                          ):(
-                            null
-                          )
+                          (account !== undefined)? (<li key={account}>{nickname}({account})</li>):(null)
                         ))}
                       </ul>
                     </Col>
@@ -260,7 +260,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               {(editMode === true)?(
                 <ScheduleSelector
                   onChange={handleChange}
-                  selection={schedule}
+                  selection={myTimeSlots}
                   numDays={days}
                   startDate={startDate}           //change to  startDate={new Date(Date.parse(startDate))}
                   minTime={startTime}
@@ -279,18 +279,14 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                   participants = {participants}
                   setAvailableParticipants={setAvailableParticipants}
                   setUnavailableParticipants={setUnavailableParticipants}
-                  
                 />
               )}
-              
             </Col>
           </Row>        
         </Content>
         </Layout>  
     </Layout>
- 
     )
-    
   }
 
 export default EventPage;
