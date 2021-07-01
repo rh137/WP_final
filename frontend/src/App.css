@@ -75,7 +75,8 @@
 } 
 .data-grid-container .data-grid .cell {
   height: 4vh;
-  min-width: 10vh;
+  width: 80px;
+  display: inline-block;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -84,12 +85,31 @@
   background-color: unset;
   transition : background-color 500ms ease;
   vertical-align: middle;
-  text-align: right;
+  text-align: center;
   border: 1px solid #DDD;
   padding: 0;
   font-size: 16px;
 }
 
+
+.data-grid-container .data-grid .part0 {
+  background-color: white;
+}
+.data-grid-container .data-grid .part1 {
+  background-color: #ccffff;
+}
+.data-grid-container .data-grid .part2 {
+  background-color: #99ffff;
+}
+.data-grid-container .data-grid .part3 {
+  background-color: #66ffff;
+}
+.data-grid-container .data-grid .part4 {
+  background-color: #33ffff;
+}
+.data-grid-container .data-grid .part5 {
+  background-color: #00ffff;
+}
 
 .data-grid-container .data-grid .cell.selected {
   border: 5px double rgba(7, 96, 165, 0.15);

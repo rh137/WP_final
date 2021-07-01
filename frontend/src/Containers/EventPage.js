@@ -250,7 +250,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                 ):(
                   <>
                     <Col span={10} offset={1}>
-                      <h1 style={{fontSize: 18}}>Available</h1>
+                      <h1 style={{fontSize: 18}}>      Available</h1>
 
                       <ul style={{fontSize: 18}}>
                       {availableParticipants.map(({nickname, account}) => (
@@ -267,7 +267,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                       />
                     </Col>
                     <Col span={10} offset={0.5}>
-                      <h1 style={{fontSize: 18}}>Unavailable</h1>
+                      <h1 style={{fontSize: 18}}>      Unavailable</h1>
                       <ul style={{fontSize: 18}}>
                         {unavailableParticipants.map(({nickname, account}) => (
                           (account !== undefined)? (<li key={account}>{nickname}({account})</li>):(null)

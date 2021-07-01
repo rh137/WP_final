@@ -65,17 +65,22 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, parti
 
   const getGrid = (data_list) => {
     let arr = []
-    data_list.map((i) => {
+    // row length: date_range.length + 1
+    for (let _ = 0; _ < data_list.length; _++) {
+      let i = data_list[_];
       if(i.key.length < 8)
-        arr.push({key: i.key, value: i.key, participants: null, readOnly: true, width: "100vh"})
-      
+        arr.push({key: i.key, value: i.key, participants: null, readOnly: true, width: "100vh", type: "COL1"})
+
       else if(i.key.length < 11)
-        arr.push({key: i.key, value: i.key, participants: null, readOnly: true, width: "180vh" })
-      else if(i.participants.length === 0)
-        arr.push({key: i.key, value: i.participants.length, participants: null, readOnly: true, width: "180vh"})
-      else
-        arr.push({key: i.key, value: i.participants.length, participants: i.participants, readOnly: true, width: "180vh"})     
-    })
+        arr.push({key: i.key, value: i.key, participants: null, readOnly: true, width: "180vh", type: "ROW1"})
+        //else if(i.participants.length === 0)
+      //  arr.push({key: i.key, value: i.participants.length, participants: null, readOnly: true, width: "180vh"})
+      else{
+        let li = Math.floor(_ / (date_range.length + 1));
+        let lj = _ % (date_range.length + 1);
+        arr.push({key: i.key, value: i.participants.length, participants: ((i.participants.length === 0) ? null : i.participants), readOnly: true, width: "180vh", type: "VAL", loci: li, locj: lj})
+      }
+    }
 
     let gridArray = []
     for(let i = 0, j=arr.length; i < j; i+=(date_range.length+1)){
@@ -123,6 +128,52 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, parti
           data={grid_list}
           valueRenderer={cell => cell.value}
           onSelect={handleSelected}
+          rowRenderer={(props) => {
+            return <tr style={{"white-space": "nowrap", 'overflow': 'scroll'}}>{props.children}</tr>
+          }}
+          cellRenderer={(props) => {
+            const { participants } = props.cell;
+            const participantsCount = participants ? participants.length : 0;
+            let class_ = 'cell val';
+            if (props.cell.type === "VAL") {
+              class_ += ' part' + Math.min(participantsCount, 5);
+              class_ += ' i' + props.cell.loci;
+              class_ += ' j' + props.cell.locj;
+            }
+            return (
+              props.cell.type === "COL1" ?
+                <td style={{'background-color': 'white'}} className='cell col1'>
+                  {props.cell.value}
+                </td> :
+              props.cell.type === "ROW1" ?
+                <td style={{'background-color': 'white'}} className='cell row1'>
+                  {props.cell.value}
+                </td> :
+                <td className={class_}
+                    onMouseOver={(event) => {
+                      const cls = event.target.className.split(' ');
+                      console.log(cls)
+                      const i = cls[cls.length - 2].slice(1);
+                      const j = cls[cls.length - 1].slice(1);
+                      console.log(i);
+                      console.log(j);
+                      const arg = {
+                        start: {
+                          i: parseInt(i),
+                          j: parseInt(j)
+                        }
+                      }
+                      handleSelected(arg);
+                      }
+                    } onMouseLeave={(event) => {
+                      setAvailableParticipants([""]);
+                      setUnavailableParticipants([""]);
+                    }}
+                    >
+                  {participantsCount}
+                </td>
+            )
+          }}
         />
     );
 }
