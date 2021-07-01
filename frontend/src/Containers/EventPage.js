@@ -3,7 +3,7 @@ import ScheduleSelector from 'react-schedule-selector'
 import moment from "moment";
 import { Layout, Menu,  Row, Col, Button, Divider } from 'antd';
 import {TeamOutlined, UserOutlined, DoubleLeftOutlined} from '@ant-design/icons';
-import AddFriendModal from "../Components/AddFriendModal";
+import InviteModal from "../Components/InviteModal";
 import ScheduleTable from "../Components/ScheduleTable";
 import { mergeTimeSlots, splitTimeSlots } from '../utils/index'
 
@@ -217,7 +217,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         </Menu>
       </Sider>
       
-      <AddFriendModal
+      <InviteModal
         visible={friendModalVisible}
         onCreate={(value) => {
           //Invite()
@@ -241,7 +241,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
             >
               <h1 style={{fontWeight: "bold", fontSize:"25px"}}>{title}</h1>
               <ul style={{fontSize: 18}}>
-                {(description.length === 0)?(null):(<li>活動內容： {description}</li>)}
+                {(description.length === 0)?(null):(<li>活動內容：{description}</li>)}
                 <li>活動發起人： {launcher.nickname}</li>
               </ul>
               <Row style={{margin: 5, minHeight: "55vh"}}>

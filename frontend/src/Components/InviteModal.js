@@ -7,7 +7,7 @@ const AddFriendModal = ({visible, onCreate, onCancel}) => {
     return (
       <Modal
         visible={visible}
-        title="邀請/加入朋友！"
+        title="邀請!"
         okText="加入" cancelText="取消"
         onOk={() => {
           form.validateFields().then((values) => {
@@ -21,14 +21,14 @@ const AddFriendModal = ({visible, onCreate, onCancel}) => {
           name="form_in_modal" >
 
           <Form.Item
-            name="friendAccount" label="加入朋友："
+            name="friendAccount" label="邀請："
             rules={[{
               required: true,
-              message: "Error: 請輸入朋友的帳號！",
+              message: "Error: 請輸入欲邀請的帳號！",
             },]}
           >
             <Input 
-              placeholder="請輸入朋友的帳號" 
+              placeholder="請輸入欲邀請的帳號" 
               prefix={<UsergroupAddOutlined/>} 
               style={{width: "100%"}} 
             />

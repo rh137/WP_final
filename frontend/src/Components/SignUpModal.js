@@ -20,7 +20,7 @@ const SignUpModal = ({visible, onCreate, onCancel}) => {
             name="nickname" label=" 暱稱："
             rules={[{
               required: true,
-              message: "Error: 請設定暱稱!",
+              message: "Error: 請設定暱稱！",
             },]}
           >
             <Input />
@@ -29,7 +29,7 @@ const SignUpModal = ({visible, onCreate, onCancel}) => {
             name="account" label="帳號："
             rules={[{
               required: true,
-              message: "Error: 請設定帳號!",
+              message: "Error: 請設定帳號！",
             },]}
           >
             <Input />
@@ -38,7 +38,7 @@ const SignUpModal = ({visible, onCreate, onCancel}) => {
             name="password" label="密碼："
             rules={[{
               required: true,
-              message: "Error: 請設定密碼!",
+              message: "Error: 請設定密碼！",
             },]}
           >
             <Input.Password type="password"/>

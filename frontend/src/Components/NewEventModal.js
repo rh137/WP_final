@@ -13,7 +13,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
     return (
       <Modal
         visible={visible}
-        title="發起活動!"
+        title="發起活動！"
         okText="建立" cancelText="取消"
         onOk={() => {
           form.validateFields().then((data) => {
@@ -29,7 +29,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
             name="title" label=" 活動標題："
             rules={[{
               required: true,
-              message: "Error: 請輸入活動標題!",
+              message: "Error: 請輸入活動標題！",
             },]}
           >
             <Input />
@@ -45,7 +45,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
             name="date_range" label="選擇日期區間："
             rules={[{
               required: true,
-              message: "Error: 請選定投票的日期區間!",
+              message: "Error: 請選定投票的日期區間！",
             },]}
             {...tailLayout}
           >
@@ -56,7 +56,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
             name="time_range" label="選擇欲投票的活動時間區間："
             rules={[{
               required: true,
-              message: "Error: 請選定投票的活動時間區間!",
+              message: "Error: 請選定投票的活動時間區間！",
             },]}
             {...tailLayout}
           >
@@ -68,12 +68,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
           
           <Form.Item
             name="participants" label="選擇參加者："
-            rules={[{
-              required: true,
-              message: "Error: 請至少選定一名參加者!",
-            },]}
           >
-
             <Select
               mode="multiple"
               style={{ width: '100%' }}
