@@ -8,7 +8,7 @@
 
 ## About the Project
 - 我們沒有找外掛
-- 這並非其他之前專案得延伸
+- 這並非其他之前專案的延伸
 
 ## How to Launch
 - 假定一開始在project的根目錄：
