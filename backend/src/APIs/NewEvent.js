@@ -15,8 +15,10 @@ const newEvent = async (args) => {
   }
 
   const { startDate, endDate, startTime, endTime } = args
+  if (startDate > endDate) return startDateLaterThanEndDateResponse();
   if (isInvalidDate(startDate)) return invalidStartDateResponse();
-  else if (isInvalidDate(endDate)) return invalidEndDateResponse();
+  //else if (isInvalidDate(endDate)) return invalidEndDateResponse();
+  else if (isInvalidEndDate(endDate)) return invalidEndDateResponse();
   else if (isInvalidTime(startTime)) return invalidStartTimeResponse();
   else if (isInvalidTime(endTime)) return invalidEndTimeResponse();
 
@@ -103,6 +105,15 @@ const addEventToParticipants = async (event, participants) => {
     await user.save();
   }
 }
+const isInvalidEndDate = (endDate) => {
+  const curr = new Date();
+  const y = curr.getFullYear();
+  const m = curr.getMonth() + 1;
+  const d = curr.getDate();
+  const currentDate = "" + y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d;
+
+  return endDate < currentDate;
+}
 
 // responses
 const invalidStartDateResponse = () => {
@@ -174,6 +185,15 @@ const newEventSuccessResponse = async (event) => {
       _id: event._id
     }
   };
+}
+const startDateLaterThanEndDateResponse = () => {
+  return {
+    type: "NewEvent",
+    result: {
+      success: false,
+      errorType: "START_DATE_LATER_THAN_END_DATE"
+    }
+  }
 }
 
 export default newEvent;

@@ -97,10 +97,11 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, parti
   let data_list = getData(key_list, timeSlots);
   const grid_list = getGrid(data_list);
   //const [grid, setGrid] = useState(grid_list);
-
+  const color_list = ["#6495ed", "#5286d5", "#5077be", "4668a6", "3c598e"]
 
   //Set Available/Unavailable Participants
   const handleSelected = (cell) =>{
+    console.log(cell)
     if(grid_list[cell.start.i][cell.start.j].participants !== null){
       setAvailableParticipants(grid_list[cell.start.i][cell.start.j].participants);
 

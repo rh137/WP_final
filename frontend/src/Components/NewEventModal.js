@@ -63,6 +63,7 @@ const NewEventModal = ({friends, visible, onCreate, onCancel}) => {
             <TimePicker.RangePicker 
               format={"HH:00"} 
               order="false"
+              placeholder="開始"
             />
           </Form.Item>
           

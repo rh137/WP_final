@@ -153,7 +153,7 @@ const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, s
                             if(new Date(value.date_range[0]).getTime() < yesterday.getTime()){
                                 displayStatus({
                                     type: "error",
-                                    msg: "日期無效，請選擇今天以後的日期！",
+                                    msg: "INVALID_START_DATE",
                                 })
                             }
                             else{
