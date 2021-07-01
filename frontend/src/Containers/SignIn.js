@@ -16,7 +16,7 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
             if(success === true){
                 displayStatus({
                     type: "success",
-                    msg: "Sign up successfully.",
+                    msg: "Sign up successfully！",
                 });
                 setModalVisible(false);
             }
@@ -31,6 +31,10 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
           case 'SignIn': {
             const { success} = e.result;
             if(success === true){
+                displayStatus({
+                    type: "success",
+                    msg: "Sign in successfully！",
+                })
                 setNickname(e.data.nickname);
                 setFriends(e.data.friends);
                 setEvents(e.data.events);
@@ -79,11 +83,11 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                 <Form.Item
                     name="account"
                     label="帳號"
-                    rules={[{ required: true, message: 'Please input your Account!' }]}
+                    rules={[{ required: true, message: 'Error: 請輸入帳號！' }]}
                 >
                     <Input 
                         prefix={<UserOutlined className="site-form-item-icon" />} 
-                        placeholder="Account"
+                        placeholder="請輸入您的帳號"
                         size="large"
                         value={account}
                         onChange={(e) => setAccount(e.target.value)}
@@ -93,21 +97,21 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                 <Form.Item
                     name="password"
                     label="密碼："
-                    rules={[{ required: true, message: 'Please input your Password!' }]}
+                    rules={[{ required: true, message: 'Error: 請輸入密碼！' }]}
                 >
                     <Input.Password
                         prefix={<LockOutlined className="site-form-item-icon" />}
                         iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                         type="password"
-                        placeholder="Password"
+                        placeholder="請輸入您的密碼"
                         size="large"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </Form.Item>
                 <Form.Item {...tailLayout}>
-                    <Button htmlType="submit" type="primary" size="large">Sign In</Button>
-                    <Button htmlType="button" style={{ margin: '0 8px'}} size="large" onClick={addUser}>Sign Up</Button>
+                    <Button htmlType="submit" type="primary" size="large">登入</Button>
+                    <Button htmlType="button" style={{ margin: '0 8px'}} size="large" onClick={addUser}>註冊</Button>
                 </Form.Item>
             </Form>
             

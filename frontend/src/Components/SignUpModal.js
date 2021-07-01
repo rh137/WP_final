@@ -5,8 +5,8 @@ const SignUpModal = ({visible, onCreate, onCancel}) => {
     return (
       <Modal
         visible={visible}
-        title="Sign Up!"
-        okText="Submit" cancelText="Cancel"
+        title="註冊會員"
+        okText="提交" cancelText="取消"
         onCancel={onCancel}
         onOk={() => {
           form.validateFields().then((values) => {
@@ -20,7 +20,7 @@ const SignUpModal = ({visible, onCreate, onCancel}) => {
             name="nickname" label=" 暱稱："
             rules={[{
               required: true,
-              message: "Error: Please enter Nickname!",
+              message: "Error: 請設定暱稱!",
             },]}
           >
             <Input />
@@ -29,7 +29,7 @@ const SignUpModal = ({visible, onCreate, onCancel}) => {
             name="account" label="帳號："
             rules={[{
               required: true,
-              message: "Error: Please enter Account!",
+              message: "Error: 請設定帳號!",
             },]}
           >
             <Input />
@@ -38,7 +38,7 @@ const SignUpModal = ({visible, onCreate, onCancel}) => {
             name="password" label="密碼："
             rules={[{
               required: true,
-              message: "Error: Please enter Password!",
+              message: "Error: 請設定密碼!",
             },]}
           >
             <Input.Password type="password"/>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Layout, Menu, Card, Row, Col } from 'antd';
-import { UserOutlined, TeamOutlined, NotificationOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { UserOutlined, TeamOutlined, NotificationOutlined, UsergroupAddOutlined, ExportOutlined } from '@ant-design/icons';
 import "../App.css";
 import EventPage from "./EventPage";
 import NewEventModal from "../Components/NewEventModal";
@@ -9,7 +9,7 @@ import AddFriendModal from "../Components/AddFriendModal";
 const {Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
-const Homepage = ({account, nickname, friends, events, setFriends, setEvents, server, displayStatus}) => {
+const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, setEvents, server, displayStatus}) => {
     server.onmessage = (m) => {
         onEvent(JSON.parse(m.data));
     };
@@ -52,14 +52,6 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                     let updateEvents = [...events, e.data];
                     setEvents(updateEvents);
                     setEventModalVisible(false);
-
-                    server.send(JSON.stringify({
-                        type: "GetAvailableTimeSlots",
-                        args: { 
-                          requesterAccount: account,
-                          eventId: id
-                        }
-                    }));
                     setEnterEvent(true);
                 }
                 else{
@@ -137,15 +129,17 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         >
                             <Menu.Item key="Title" style={{cursor: "default"}}><h1>{nickname}'s when2meet</h1></Menu.Item>
                             <SubMenu key="Information" icon={<UserOutlined />} title="個人資訊">
-                                <Menu.Item key="account">Account: {account}</Menu.Item>
+                                <Menu.Item key="account">{nickname}({account})</Menu.Item>
                             </SubMenu>
                             <Menu.Item key="NewEvent" icon={<NotificationOutlined />} onClick={addEvent} >發起活動</Menu.Item>
                             <SubMenu key="FriendList" icon={<TeamOutlined />} title="好友列表">
                                 {friends.map(({account, nickname}) => (
-                                    <Menu.Item key={account}>{nickname}</Menu.Item>
+                                    <Menu.Item key={account}>{nickname}({account})</Menu.Item>
                                 ))}
                             </SubMenu>
                             <Menu.Item key="AddFriend" icon={<UsergroupAddOutlined />} onClick={addFriend}>加好友</Menu.Item>
+                            <Menu.Item key="Log out" icon={<ExportOutlined />} onClick={()=> setSignedIn(false)}>登出</Menu.Item>
+
                         </Menu>
                     </Sider>
 
@@ -196,7 +190,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                         onCancel={() => {setFriendModalVisible(false);}}
                     />
 
-                    <Layout className="site-layout" style={{overflow:"scroll"}}>
+                    <Layout className="site-layout" style={{overflow:"scroll", backgroundColor: "#dbedff"}}>
                         <Content className="EventBlock site-layout-background"     
                             style={{padding: 24, marginLeft: "45vh", height:"100vh"}}
                         >
@@ -208,7 +202,7 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                     <Row gutter={16} style={{marginTop: 20}}>
                                         {i.map(({title, description, startDate, endDate, startTime, endTime, participants, launcher, _id}, j) => (
                                             <Col span={12}>
-                                                <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh", cursor:"pointer"}} key={_id} 
+                                                <Card title={title} bordered={false} style={{ width: "60vh", height: "30vh",fontSize:"16px", cursor:"pointer", borderRadius: 10}} key={_id} hoverable={true} 
                                                     onClick={()=>{
                                                         setTitle(title);
                                                         setDescription(description);
@@ -219,20 +213,21 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                                         setParticipants(participants);
                                                         setLauncher(launcher);
                                                         setID(_id);
-                                                        
+
+                                                        //GetAvailableTimeSlots()
                                                         server.send(JSON.stringify({
                                                             type: "GetAvailableTimeSlots",
                                                             args: { 
                                                               requesterAccount: account,
-                                                              eventId: id
+                                                              eventId: _id
                                                             }
                                                         }));
                                                         setEnterEvent(true);
                                                     }} >
                                                     <ul>
-                                                        {(description.length === 0)?(null):(<li>Description: {description}</li>)}
-                                                        <li>Date: {(startDate.length > 10)? startDate.slice(0,10):null} ~ {(endDate.length > 10)? endDate.slice(0,10):null}</li>
-                                                        <li>Launcher: {launcher.nickname}</li>
+                                                        {(description.length === 0)?(null):(<li>活動內容: {description}</li>)}
+                                                        <li>日期： {startDate} ~ {endDate}</li>
+                                                        <li>活動發起人： {launcher.nickname}({launcher.account})</li>
                                                     </ul>
                                                 </Card>
                                             </Col>

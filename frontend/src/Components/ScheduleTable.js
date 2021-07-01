@@ -1,16 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import moment from 'moment';
 import ReactDataSheet from 'react-datasheet';
-// Be sure to include styles at some point, probably during your bootstrapping
-import 'react-datasheet/lib/react-datasheet.css';
+import '../App.css';
+import { splitTimeSlots } from '../utils/index';
 
-const ScheduleTable = ({startDate, endDate, startTime, endTime, setAvailableParticipants, setUnavailableParticipants}) => {         //add timeSlots
-  //for test 
-  const timeSlots = [
-    {date: "2021-06-29", startTime: 9, endTime: 9.5, availableParticipants: [{account: 'irene', nickname: "Irene"}, {account: 'wendy', nickname: "Wendy"}]}
-  ] 
-
-  //get date list
+const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, participants, setAvailableParticipants, setUnavailableParticipants}) => {       
+  console.log("ScheduleTable: ");
+  console.log(timeSlots)
+  //get dates in `YYYY-MM-DD`
   Date.prototype.addDays = function(days) {
     let date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
@@ -25,6 +22,7 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, setAvailablePart
     }
     return dateArray
   }
+  //get time in float
   const getTimes = (startTime, endTime) => {
     let timeArray = [];
     for (let i = startTime; i < endTime; i+=0.5)
@@ -46,7 +44,7 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, setAvailablePart
   }
   const getKey = (date_range, time_range, time_list) => {
     let keyArray = [{key: "", participants:""}];
-    date_range.map((date) => keyArray.push({key: date, participants:""}))
+    date_range.map((date) => keyArray.push({key: moment(date).format("M/D"), participants:""}))
     for (let i = 0; i < time_range.length; i++){
       for(let j = 0; j < date_range.length; j++){
         if(j === 0)
@@ -67,44 +65,63 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, setAvailablePart
 
   const getGrid = (data_list) => {
     let arr = []
-    data_list.map((i, {participants}) => {
+    data_list.map((i) => {
       if(i.key.length < 8)
-        arr.push({key: i.key, value: i.key, readOnly: true, width: 100})
+        arr.push({key: i.key, value: i.key, participants: null, readOnly: true, width: "100vh"})
       
       else if(i.key.length < 11)
-        arr.push({key: i.key, value: i.key, readOnly: true, width:200 })
+        arr.push({key: i.key, value: i.key, participants: null, readOnly: true, width: "180vh" })
+      else if(i.participants.length === 0)
+        arr.push({key: i.key, value: i.participants.length, participants: null, readOnly: true, width: "180vh"})
       else
-        arr.push({key: i.key, value: i.participants.length, participants: i.participants, readOnly: true, width: 200})     
+        arr.push({key: i.key, value: i.participants.length, participants: i.participants, readOnly: true, width: "180vh"})     
     })
-    console.log(arr);
+
     let gridArray = []
     for(let i = 0, j=arr.length; i < j; i+=(date_range.length+1)){
       gridArray.push(arr.slice(i, i+(date_range.length+1)))
     }
     return gridArray;
   }
-
+  
+  timeSlots = splitTimeSlots(timeSlots);
   let date_range = getDates(new Date(Date.parse(startDate)), new Date(Date.parse(endDate)));
   let time_range = getTimes(startTime, endTime);
   let time_list = getTimeFormat(startTime, endTime);
   let key_list = getKey(date_range, time_range, time_list);
   let data_list = getData(key_list, timeSlots);
-  console.log(data_list)
-
   const grid_list = getGrid(data_list);
-  const [grid, setGrid] = useState( grid_list )
+  //const [grid, setGrid] = useState(grid_list);
 
+
+  //Set Available/Unavailable Participants
   const handleSelected = (cell) =>{
-    console.log(cell);
-    console.log(grid[cell.start.i][cell.start.j])
-  }
+    if(grid_list[cell.start.i][cell.start.j].participants !== null){
+      setAvailableParticipants(grid_list[cell.start.i][cell.start.j].participants);
 
+      //set unavailableParticipants()
+      let unavailableArray = participants;
+      grid_list[cell.start.i][cell.start.j].participants.map(({account}) => {
+        unavailableArray=(unavailableArray.filter(function(participant){
+          return participant.account !== account;
+        }))
+      })
+      setUnavailableParticipants(unavailableArray);
+    }
+    else{
+      setAvailableParticipants([""]);
+      if(cell.start.i !==0 && cell.start.j !== 0)
+        setUnavailableParticipants(participants);
+      else
+        setUnavailableParticipants([""]);
+    }
+  }
 
     return (
         <ReactDataSheet
-          data={grid}
+          //data={grid}
+          data={grid_list}
           valueRenderer={cell => cell.value}
-          style={{width:100}}
           onSelect={handleSelected}
         />
     );
