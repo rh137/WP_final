@@ -280,7 +280,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               </Row>
               <Row style={{marginTop: 20}}>
                 {(editMode === true)?(
-                  <Button type="primary" size="large" style={{ width: "15vh", marginLeft: "18vh", fontSize: "22px", borderRadius: 5}} onClick={turnViewMode}>切換瀏覽</Button>
+                  <Button type="primary" size="large" style={{ width: "15vh", marginLeft: "18vh", fontSize: "22px", borderRadius: 5, textAlign:"center"}} onClick={turnViewMode}>切換瀏覽</Button>
                 ):(
                   <Button type="primary" size="large" style={{width: "15vh", marginLeft: "18vh", fontSize: "22px", borderRadius: 5}} onClick={turnEditMode}>切換編輯</Button>
                 )
@@ -305,7 +305,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                     columnGap={'0.5vh'}
                     rowGap={'0.5vh'}
                   />
-                  <Button  style={{width: "10vh", height: "4vh", marginTop: "2vh", marginLeft: "5vh", fontSize: "18px", borderRadius: 5}} onClick={updateTimeSlot}>儲存</Button>
+                  <Button  style={{width: "10vh", height: "4vh", marginTop: "2vh", marginLeft: "5vh", fontSize: "18px", borderRadius: 5, textAlign: "center"}} onClick={updateTimeSlot}>儲存</Button>
                   <Button style={{width: "10vh", height: "4vh", marginTop: "2vh", marginLeft: "2vh", fontSize: "18px", borderRadius: 5}} onClick={() => setMyTimeSlots([])}>重填</Button>
                 </>
               ):(
