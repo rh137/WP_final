@@ -62,6 +62,11 @@ const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, s
                 }
                 break;
             }
+            case 'InvitedToEvent':{
+                let updateEvents = [...events, e.data];
+                setEvents(updateEvents);
+                break;
+            }
         }
     }
     
@@ -147,8 +152,6 @@ const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, s
                         friends={friends}
                         visible={eventModalVisible}
                         onCreate={(value) => {                           
-                            console.log(value);
-
                             if(value.description === undefined) { value.description = ""; }
 
                             value.participants.push(account);
