@@ -18,7 +18,7 @@ const AddFriendModal = ({visible, onCreate, onCancel}) => {
         onCancel={onCancel}
       >
       <Form form={form} layout="vertical" 
-          name="form_in_modal">
+          name="form_in_modal" >
 
           <Form.Item
             name="friendAccount" label="加入朋友："

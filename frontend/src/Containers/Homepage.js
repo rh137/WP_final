@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Layout, Menu, Card, Row, Col } from 'antd';
-import { UserOutlined, TeamOutlined, NotificationOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { UserOutlined, TeamOutlined, NotificationOutlined, UsergroupAddOutlined, ExportOutlined } from '@ant-design/icons';
 import "../App.css";
 import EventPage from "./EventPage";
 import NewEventModal from "../Components/NewEventModal";
@@ -9,7 +9,7 @@ import AddFriendModal from "../Components/AddFriendModal";
 const {Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
-const Homepage = ({account, nickname, friends, events, setFriends, setEvents, server, displayStatus}) => {
+const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, setEvents, server, displayStatus}) => {
     server.onmessage = (m) => {
         onEvent(JSON.parse(m.data));
     };
@@ -138,6 +138,8 @@ const Homepage = ({account, nickname, friends, events, setFriends, setEvents, se
                                 ))}
                             </SubMenu>
                             <Menu.Item key="AddFriend" icon={<UsergroupAddOutlined />} onClick={addFriend}>加好友</Menu.Item>
+                            <Menu.Item key="Log out" icon={<ExportOutlined />} onClick={()=> setSignedIn(false)}>登出</Menu.Item>
+
                         </Menu>
                     </Sider>
 

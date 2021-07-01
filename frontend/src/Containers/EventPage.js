@@ -303,7 +303,8 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                     timeFormat={"HH:mm"}
                     hoveredColor={"rgba(89, 120, 242, 1)"}
                   />
-                  <Button  style={{width: "15vh", height: "4vh", marginTop: "2vh", marginLeft: "5vh", fontSize: "18px", borderRadius: 5}} onClick={updateTimeSlot}>儲存</Button>
+                  <Button  style={{width: "10vh", height: "4vh", marginTop: "2vh", marginLeft: "5vh", fontSize: "18px", borderRadius: 5}} onClick={updateTimeSlot}>儲存</Button>
+                  <Button style={{width: "10vh", height: "4vh", marginTop: "2vh", marginLeft: "2vh", fontSize: "18px", borderRadius: 5}} onClick={() => setMyTimeSlots([])}>重填</Button>
                 </>
               ):(
                 <ScheduleTable 

@@ -43,6 +43,7 @@ function App() {
           nickname={nickname}   
           friends={friends}
           events={events}
+          setSignedIn={setSignedIn}
           setFriends={setFriends}
           setEvents={setEvents}
           server={server}
