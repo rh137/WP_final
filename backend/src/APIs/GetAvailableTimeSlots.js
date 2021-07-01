@@ -1,54 +1,51 @@
 import db from "../db";
 import { parseTimeSlots } from "./myUtil";
-import util from "util";
+import responses from "./commonFailedResponses";
+const { missingFieldsResponse, eventNotExistResponse,
+        accountNotExistResponse, notInvitedResponse } = responses
 
 const getAvailableTimeSlots = async (args) => {
   console.log('GetAvailableTimeSlots called.');
 
-  // TODO: check missing fields
-
-  // TODO: check if the event exists
-
-  // TODO: check if the account exists
-
-  // TODO: check if the user is invited
+  if (hasMissingFields(args)) {
+    return missingFieldsResponse("GetAvailableTimeSlots");
+  }
 
   const { requesterAccount, eventId } = args;
-  //const user = await db.UserModel.findOne({ account: requesterAccount });
   const event = await db.EventModel.findById(eventId);
+  if (!event) {
+    return eventNotExistResponse("GetAvailableTimeSlots");
+  }
+
+  const user = await db.UserModel.findOne({ account: requesterAccount });
+  if (!user) {
+    return accountNotExistResponse("GetAvailableTimeSlots");
+  }
+
+  if (!event.participants.includes(user._id)) {
+    return notInvitedResponse("GetAvailableTimeSlots");
+  }
+
   const { startDate, endDate } = event;
 
   // (pseudocode)
   //    for date in [startDate, endDate]:
   //      1) find all timeslots of event on date
-  //      2) apply parseTimeSlotsInADate.js
+  //      2) apply parseTimeSlots (by individual -> by time)
   //      3) add date fields to each output time slot, push to ret
   //    return ret
   const ret = [];
   const dateStrings = getAllDateStringsInRange(startDate, endDate);
   for (const date of dateStrings) {
     const timeSlotsOnDate = await db.TimeSlotModel.find({date: date, event: eventId});
-    const ret__ = await parseTimeSlots(timeSlotsOnDate)
-    if (ret__.length > 0) {
-      console.log(ret__[0].availableParticipants)
-      ret__.forEach((obj) => { obj.date = date })
-      ret.push(...ret__)
+    const parsedTimeSlotsOnDate = await parseTimeSlots(timeSlotsOnDate);
+    if (parsedTimeSlotsOnDate.length > 0) {
+      parsedTimeSlotsOnDate.forEach((obj) => { obj.date = date });
+      ret.push(...parsedTimeSlotsOnDate);
     }
-  }
-  for (const r of ret) {
-    console.log(r)
-    //console.log(r.availableParticipants);
   }
 
-  return {
-    type: "GetAvailableTimeSlots",
-    result: {
-      success: true
-    },
-    data: {
-      timeSlots: ret
-    }
-  }
+  return getAvailableTimeSlotsSuccessResponse(ret);
 }
 
 // implementation details
@@ -63,12 +60,12 @@ const getDaysByYearAndMonth = (year, month) => {
       return 28;
   }
 }
-function parseDateString(dateString) {
+const parseDateString = (dateString) => {
   // dateString: type String, format yyyy_mm_dd
   const [y, m, d] = dateString.split("-").map(s => parseInt(s, 10))
   return { y: y, m: m, d: d }
 }
-function getAllDateStringsInRange(startDate, endDate) {
+const getAllDateStringsInRange = (startDate, endDate) => {
   const start = parseDateString(startDate)
   const end = parseDateString(endDate)
   if (start.y  >  end.y) return []
@@ -89,6 +86,23 @@ function getAllDateStringsInRange(startDate, endDate) {
     }
   }
   return ret;
+}
+const hasMissingFields = (args) => {
+  const { requesterAccount, eventId } = args;
+  return (!requesterAccount || !eventId);
+}
+
+// responses
+const getAvailableTimeSlotsSuccessResponse = (timeSlots) => {
+  return {
+    type: "GetAvailableTimeSlots",
+    result: {
+      success: true
+    },
+    data: {
+      timeSlots: timeSlots
+    }
+  }
 }
 
 export default getAvailableTimeSlots;
