@@ -83,37 +83,25 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, parti
     }
     return gridArray;
   }
-  //const [grid, setGrid] = useState([])
+  
   timeSlots = splitTimeSlots(timeSlots);
   let date_range = getDates(new Date(Date.parse(startDate)), new Date(Date.parse(endDate)));
-  
   let time_range = getTimes(startTime, endTime);
-
   let time_list = getTimeFormat(startTime, endTime);
   let key_list = getKey(date_range, time_range, time_list);
   let data_list = getData(key_list, timeSlots);
+  const grid_list = getGrid(data_list);
+  //const [grid, setGrid] = useState(grid_list);
 
-  let grid_list = getGrid(data_list);
 
-  const [grid, setGrid] = useState(grid_list);
-  console.log(grid)
-  /*
-  const [grid, setGrid] = useState([]);
-  useEffect(()=>{
-    if(grid_list !== grid){
-      setGrid(grid_list)
-    }
-  },[])
-*/
-  
   //Set Available/Unavailable Participants
   const handleSelected = (cell) =>{
-    if(grid[cell.start.i][cell.start.j].participants !== null){
-      setAvailableParticipants(grid[cell.start.i][cell.start.j].participants);
+    if(grid_list[cell.start.i][cell.start.j].participants !== null){
+      setAvailableParticipants(grid_list[cell.start.i][cell.start.j].participants);
 
       //set unavailableParticipants()
       let unavailableArray = participants;
-      grid[cell.start.i][cell.start.j].participants.map(({account}) => {
+      grid_list[cell.start.i][cell.start.j].participants.map(({account}) => {
         unavailableArray=(unavailableArray.filter(function(participant){
           return participant.account !== account;
         }))
@@ -131,7 +119,8 @@ const ScheduleTable = ({startDate, endDate, startTime, endTime, timeSlots, parti
 
     return (
         <ReactDataSheet
-          data={grid}
+          //data={grid}
+          data={grid_list}
           valueRenderer={cell => cell.value}
           onSelect={handleSelected}
         />

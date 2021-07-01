@@ -64,8 +64,8 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         }
         else{
           setTimeSlots(e.data.timeSlots);
-          console.log(timeSlots);
-          setEditMode(false);
+          if(timeSlots.length!= null)
+            setEditMode(false);
           setMyTimeSlots([]);
         }
         break;
@@ -76,7 +76,6 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         if(success === true){ 
           let timeSlots = splitTimeSlots(e.data.availableTimeSlots);
           myTimeSlotsUpdate(timeSlots);
-          setTimeSlots([]);
           setEditMode(true);      
         }
         else{
@@ -95,7 +94,8 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
   const [availableParticipants, setAvailableParticipants] = useState([]);
   const [unavailableParticipants, setUnavailableParticipants] = useState([]);                                 
   const [friendModalVisible, setFriendModalVisible] = useState(false);               //for invite()
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState();
+  //planB:const [editMode, setEditMode] = useState(true);
   const [saved, setSaved] = useState(false);                                          //onClick save or not
 
   const addParticipant = () => setFriendModalVisible(true); 
@@ -152,6 +152,8 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
           eventId: id
         }
       }));
+      setAvailableParticipants([]);
+      setUnavailableParticipants([]);
     }
 
   }
@@ -189,7 +191,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
   };
   
     return(
-      <Layout className="App-homepage" style={{ minHeight: '100vh' }}>
+      <Layout className="App-homepage" style={{ minHeight: '100vh', backgroundColor:"#dbedff" }}>
       <Sider 
         style={{ overflow: 'auto', position: 'fixed', height: "100vh", left: 0, backgroundColor: "white",}}>
         <Menu mode="inline"  style={{fontSize: "18px"}}>
@@ -220,7 +222,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         }}
         onCancel={() => {setFriendModalVisible(false);}}
       />
-      <Layout className="site-layout" style={{overflow:"scroll", padding: 30}}>
+      <Layout className="site-layout" style={{padding: 30, backgroundColor: "#dbedff"}}>
         <Content className=""style={{padding: 24, marginLeft: 200, Height:"100vh"}}>
           <Row style={{backgroundColor: "white"}} >
             <Col 
@@ -228,7 +230,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               style={{padding: 15}}
             >
               <h1 style={{fontWeight: "bold", fontSize:"25px"}}>{title}</h1>
-              <ul style={{fontSize: "20px"}}>
+              <ul style={{fontSize: 18}}>
                 {(description.length === 0)?(null):(<li>活動內容： {description}</li>)}
                 <li>活動發起人： {launcher.nickname}</li>
               </ul>
@@ -238,9 +240,9 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                 ):(
                   <>
                     <Col span={10} offset={1}>
-                      <h1>Available</h1>
+                      <h1 style={{fontSize: 18}}>Available</h1>
 
-                      <ul>
+                      <ul style={{fontSize: 18}}>
                       {availableParticipants.map(({nickname, account}) => (
                         (account !== undefined)? (
                           <li key={account}>{nickname}({account})</li>):(null)                         
@@ -255,8 +257,8 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                       />
                     </Col>
                     <Col span={10} offset={0.5}>
-                      <h1>Unavailable</h1>
-                      <ul>
+                      <h1 style={{fontSize: 18}}>Unavailable</h1>
+                      <ul style={{fontSize: 18}}>
                         {unavailableParticipants.map(({nickname, account}) => (
                           (account !== undefined)? (<li key={account}>{nickname}({account})</li>):(null)
                         ))}
@@ -268,9 +270,9 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               </Row>
               <Row style={{marginTop: 20}}>
                 {(editMode === true)?(
-                  <Button type="primary" size="large" style={{ width: "15vh", marginLeft: "15vh", fontSize: "22px"}} onClick={turnViewMode}>切換瀏覽</Button>
+                  <Button type="primary" size="large" style={{ width: "15vh", marginLeft: "18vh", fontSize: "22px", borderRadius: 5}} onClick={turnViewMode}>切換瀏覽</Button>
                 ):(
-                  <Button type="primary" size="large" style={{width: "20vh", marginLeft: "15vh", fontSize: "22px"}} onClick={turnEditMode}>切換編輯</Button>
+                  <Button type="primary" size="large" style={{width: "15vh", marginLeft: "18vh", fontSize: "22px", borderRadius: 5}} onClick={turnEditMode}>切換編輯</Button>
                 )
                 }
               </Row>
@@ -291,7 +293,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
                     timeFormat={"HH:mm"}
                     hoveredColor={"rgba(89, 120, 242, 1)"}
                   />
-                  <Button  style={{width: "15vh", height: "4.5vh", marginTop: "2vh", marginLeft: "5vh", fontSize: "22px"}} onClick={updateTimeSlot}>儲存</Button>
+                  <Button  style={{width: "15vh", height: "4vh", marginTop: "2vh", marginLeft: "5vh", fontSize: "18px", borderRadius: 5}} onClick={updateTimeSlot}>儲存</Button>
                 </>
               ):(
                 <ScheduleTable 
