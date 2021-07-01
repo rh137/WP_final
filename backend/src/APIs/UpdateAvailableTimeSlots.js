@@ -28,12 +28,15 @@ const updateAvailableTimeSlots = async (args) => {
   }
 
   const { availableTimeSlots } = args;
-  for (const { date, startTime, endTime } of availableTimeSlots) {
-    if (date < event.startDate || date > event.endDate) {
-      return dateOutOfRangeResponse();
-    }
-    if (startTime < event.startTime || endTime > event.endTime) {
-      return timeOutOfRangeResponse();
+  if (availableTimeSlots.length > 0) {
+    for (const {date, startTime, endTime} of availableTimeSlots) {
+      if (date === -1) continue;
+      if (date < event.startDate || date > event.endDate) {
+        return dateOutOfRangeResponse();
+      }
+      if (startTime < event.startTime || endTime > event.endTime) {
+        return timeOutOfRangeResponse();
+      }
     }
   }
 
