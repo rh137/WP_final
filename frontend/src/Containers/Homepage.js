@@ -127,7 +127,7 @@ const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, s
                             mode="inline"
                             style={{ height: '100%', borderRight: 0, fontSize: "20px"}}
                         >
-                            <Menu.Item key="Title" style={{cursor: "default"}}><h1>{nickname}'s when2meet</h1></Menu.Item>
+                            <Menu.Item key="Title" style={{cursor: "default"}}><h1>{nickname}'s Let's Meet!</h1></Menu.Item>
                             <SubMenu key="Information" icon={<UserOutlined />} title="個人資訊">
                                 <Menu.Item key="account">{nickname}({account})</Menu.Item>
                             </SubMenu>
@@ -148,24 +148,35 @@ const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, s
                         visible={eventModalVisible}
                         onCreate={(value) => {                           
                             console.log(value);
+                            let yesterday = new Date();
+                            yesterday.setDate(yesterday.getDate() - 1);
+                            if(new Date(value.date_range[0]).getTime() < yesterday.getTime()){
+                                displayStatus({
+                                    type: "error",
+                                    msg: "日期無效，請選擇今天以後的日期！",
+                                })
+                            }
+                            else{
+                                if(value.description === undefined) { value.description = ""; }
 
-                            if(value.description === undefined) { value.description = ""; }
+                                if (value.participants === undefined) value.participants = [];
+                                value.participants.push(account);
 
-                            value.participants.push(account);
-
-                            server.send(JSON.stringify({
-                                type: "NewEvent",
-                                args: { 
-                                    title: value.title,
-                                    description: value.description,
-                                    startDate: value.date_range[0].format('YYYY-MM-DD'),           
-                                    endDate: value.date_range[1].format('YYYY-MM-DD'),              
-                                    startTime: parseFloat(value.time_range[0].format('HH.mm')),
-                                    endTime: parseFloat(value.time_range[1].format('HH.mm')),
-                                    participants: value.participants.map((accountStr) => ({account: accountStr})),
-                                    launcher: {account: account}
-                                }
-                            }));
+                                server.send(JSON.stringify({
+                                    type: "NewEvent",
+                                    args: { 
+                                        title: value.title,
+                                        description: value.description,
+                                        startDate: value.date_range[0].format('YYYY-MM-DD'),           
+                                        endDate: value.date_range[1].format('YYYY-MM-DD'),              
+                                        startTime: parseFloat(value.time_range[0].format('HH.mm')),
+                                        endTime: parseFloat(value.time_range[1].format('HH.mm')),
+                                        participants: value.participants.map((accountStr) => ({account: accountStr})),
+                                        launcher: {account: account}
+                                    }
+                                }));
+                            }
+                            
                         }}
                         onCancel={() => {setEventModalVisible(false);}}
                     />
@@ -225,7 +236,7 @@ const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, s
                                                         setEnterEvent(true);
                                                     }} >
                                                     <ul>
-                                                        {(description.length === 0)?(null):(<li>活動內容: {description}</li>)}
+                                                        {(description.length === 0)?(null):(<li>活動內容： {description}</li>)}
                                                         <li>日期： {startDate} ~ {endDate}</li>
                                                         <li>活動發起人： {launcher.nickname}({launcher.account})</li>
                                                     </ul>

@@ -73,7 +73,7 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
     
     return (
         <div className="App-signIn">
-            <div className="App-title"><h1>when2meet fake</h1></div>
+            <div className="App-title"><h1>Let's Meet!</h1></div>
             <Form
                 name="normal_login"
                 style={{ width: 300 }}
@@ -110,8 +110,11 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
                     />
                 </Form.Item>
                 <Form.Item {...tailLayout}>
-                    <Button htmlType="submit" type="primary" size="large">登入</Button>
-                    <Button htmlType="button" style={{ margin: '0 8px'}} size="large" onClick={addUser}>註冊</Button>
+                  <div>
+
+                    <Button htmlType="button" style={{'margin-left': '15px' }} size="large" onClick={addUser}>註冊</Button>
+                    <Button htmlType="submit" style={{'float': 'right', 'margin-right': '15px'}} type="primary" size="large">登入</Button>
+                  </div>
                 </Form.Item>
             </Form>
             
