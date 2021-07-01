@@ -234,7 +234,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
       />
       <Layout className="site-layout" style={{padding: 30, backgroundColor: "#dbedff"}}>
         <Content className=""style={{padding: 24, marginLeft: 200, Height:"100vh"}}>
-          <Row style={{backgroundColor: "white"}} >
+          <Row style={{backgroundColor: "white", maxHeight: '90vh'}} >
             <Col 
               span={9} 
               style={{padding: 15}}
@@ -288,7 +288,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
               </Row>
             </Col>
 
-            <Col span={14} style={{ padding: 15, alignSelf:"center", marginRight: "0.5vh"}}>
+            <Col span={14} style={{ padding: 15, alignSelf:"center", marginRight: "0.5vh", maxHeight: "90vh", overflow:"scroll"}}>
 
               {(editMode === true)?(
                 <>
