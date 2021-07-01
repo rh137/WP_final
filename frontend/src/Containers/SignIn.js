@@ -73,7 +73,7 @@ const SignIn = ({account, password, setSignedIn, setAccount, setPassword, setNic
     
     return (
         <div className="App-signIn">
-            <div className="App-title"><h1>when2meet fake</h1></div>
+            <div className="App-title"><h1>Let's Meet!</h1></div>
             <Form
                 name="normal_login"
                 style={{ width: 300 }}

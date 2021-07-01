@@ -74,7 +74,8 @@
   border-collapse: collapse;
 } 
 .data-grid-container .data-grid .cell {
-  height: 3.5vh;
+  height: 4vh;
+  min-width: 10vh;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -103,5 +104,8 @@
   margin: 8px 8px;
   border-color: white;
   border-width: 2px;
+}
 
+.ScheduleSelector__DateCell-sc-1ke4ka2-3{
+  min-width: 10vh;
 }

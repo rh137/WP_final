@@ -127,7 +127,7 @@ const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, s
                             mode="inline"
                             style={{ height: '100%', borderRight: 0, fontSize: "20px"}}
                         >
-                            <Menu.Item key="Title" style={{cursor: "default"}}><h1>{nickname}'s when2meet</h1></Menu.Item>
+                            <Menu.Item key="Title" style={{cursor: "default"}}><h1>{nickname}'s Let's Meet!</h1></Menu.Item>
                             <SubMenu key="Information" icon={<UserOutlined />} title="個人資訊">
                                 <Menu.Item key="account">{nickname}({account})</Menu.Item>
                             </SubMenu>
