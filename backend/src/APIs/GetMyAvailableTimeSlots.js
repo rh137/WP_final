@@ -1,19 +1,31 @@
 import db from "../db";
+import responses from "./commonFailedResponses";
+const { missingFieldsResponse, eventNotExistResponse,
+        accountNotExistResponse, notInvitedResponse} = responses;
 
 const getMyAvailableTimeSlots = async (args) => {
   console.log('GetMyAvailableTimeSlots called.');
 
-  // TODO: check missing fields
+  if (hasMissingFields(args)) {
+    return missingFieldsResponse("GetMyAvailableTimeSlots");
+  }
 
-  // TODO: check if the event exists
-
-  // TODO: check if the account exists
-
-  // TODO: check if the user is invited
-
-  const { requesterAccount, eventId } = args;
-  const user = await db.UserModel.findOne({ account: requesterAccount });
+  const {requesterAccount, eventId} = args;
   const event = await db.EventModel.findById(eventId);
+  if (!event) {
+    return eventNotExistResponse("GetMyAvailableTimeSlots");
+  }
+
+  const user = await db.UserModel.findOne({account: requesterAccount});
+  if (!user) {
+    return accountNotExistResponse("GetMyAvailableTimeSlots");
+  }
+
+  if (!event.participants.includes(user._id)) {
+    return notInvitedResponse("GetMyAvailableTimeSlots");
+  }
+
+
   const availableTimeSlotsOfTheUser = await db.TimeSlotModel.find({event: eventId, user: user});
   const returnedAvailableTimeSlotsOfTheUser = availableTimeSlotsOfTheUser.map(ts => {
     return {
@@ -23,17 +35,26 @@ const getMyAvailableTimeSlots = async (args) => {
     }
   })
 
+  return getMyAvailableTimeSlotsSuccessResponse(returnedAvailableTimeSlotsOfTheUser);
+}
+
+// implementation details
+const hasMissingFields = (args) => {
+  const { requesterAccount, eventId } = args;
+  return (!requesterAccount || !eventId);
+}
+
+// responses
+const getMyAvailableTimeSlotsSuccessResponse = (returnedTimeSlots) => {
   return {
     type: "GetMyAvailableTimeSlots",
     result: {
       success: true
     },
     data: {
-      availableTimeSlots: returnedAvailableTimeSlotsOfTheUser
+      availableTimeSlots: returnedTimeSlots
     }
   }
 }
-
-// implementation details
 
 export default getMyAvailableTimeSlots;

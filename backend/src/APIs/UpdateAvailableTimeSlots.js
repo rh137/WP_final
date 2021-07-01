@@ -2,6 +2,8 @@ import db from "../db";
 import responses from "./commonFailedResponses";
 const { missingFieldsResponse, eventNotExistResponse,
         notInvitedResponse, accountNotExistResponse } = responses;
+import AsyncLock from 'async-lock';
+const lock = new AsyncLock();
 
 const updateAvailableTimeSlots = async (args) => {
   console.log('UpdateAvailableTimeSlots called.');
@@ -25,21 +27,29 @@ const updateAvailableTimeSlots = async (args) => {
     return notInvitedResponse("UpdateAvailableTimeSlots");
   }
 
-  // TODO: check startTime and endTime
-
-  // TODO: async-lock the following block
-  // update timeslot to db.TimeSlotModel
   const { availableTimeSlots } = args;
-  await db.TimeSlotModel.deleteMany({user: user._id, event: event._id})
   for (const { date, startTime, endTime } of availableTimeSlots) {
-    await new db.TimeSlotModel({
-      user: user._id,
-      event: event._id,
-      date: date,
-      startTime: startTime,
-      endTime: endTime
-    }).save();
+    if (date < event.startDate || date > event.endDate) {
+      return dateOutOfRangeResponse();
+    }
+    if (startTime < event.startTime || endTime > event.endTime) {
+      return timeOutOfRangeResponse();
+    }
   }
+
+  // update timeslot to db.TimeSlotModel
+  await lock.acquire('timeSlotsDBLock', async () => {
+    await db.TimeSlotModel.deleteMany({user: user._id, event: event._id})
+    for (const {date, startTime, endTime} of availableTimeSlots) {
+      await new db.TimeSlotModel({
+        user: user._id,
+        event: event._id,
+        date: date,
+        startTime: startTime,
+        endTime: endTime
+      }).save();
+    }
+  })
 
   return updateAvailableTimeSlotsSuccessResponse();
 }
@@ -57,6 +67,26 @@ const updateAvailableTimeSlotsSuccessResponse = () => {
     result: {
       success: true
     }
+  }
+}
+const timeOutOfRangeResponse = () => {
+  return {
+    type: "UpdateAvailableTimeSlots",
+    result: {
+      success: false,
+      errorType: "TIME_OUT_OF_RANGE"
+    },
+    data: {}
+  }
+}
+const dateOutOfRangeResponse = () => {
+  return {
+    type: "UpdateAvailableTimeSlots",
+    result: {
+      success: false,
+      errorType: "DATE_OUT_OF_RANGE"
+    },
+    data: {}
   }
 }
 

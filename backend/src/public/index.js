@@ -133,8 +133,12 @@ const updateAvailableTimeSlots = () => {
       eventId: arg2.value,
       availableTimeSlots: [{
         date: "2021-07-07",
-        startTime: 17,
-        endTime: 17.5
+        startTime: 16,
+        endTime: 18
+      }, {
+        date: "2021-07-08",
+        startTime: 7,
+        endTime: 15
       }]
     }
   })
