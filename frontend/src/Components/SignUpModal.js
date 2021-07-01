@@ -1,3 +1,4 @@
+import React from 'react';
 import { Modal, Form, Input } from "antd";
 
 const SignUpModal = ({visible, onCreate, onCancel}) => {

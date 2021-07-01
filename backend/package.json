@@ -14,7 +14,7 @@
   },
   "type": "module",
   "scripts": {
-    "start": "nodemon src/server.js -x .js --exec babel-node --es-module-specifier-resolution=node"
+    "start": "nodemon ../server.js -x .js --exec babel-node --es-module-specifier-resolution=node"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.5",

@@ -1,19 +1,25 @@
 import express from 'express';
 import http from 'http';
 import WebSocket from 'ws';
+import path from 'path';
+import url from 'url';
 
-import { connectToMongoDB } from "./mongo";
-import apis from './APIs'
-import apis_dev from './APIs/devOnly'
+import { connectToMongoDB } from "./backend/src/mongo";
+import apis from './backend/src/APIs'
+import apis_dev from './backend/src/APIs/devOnly'
 
 // server setup
 const app = express();
 const httpServer = http.createServer(app);
 const wsServer = new WebSocket.Server({ server: httpServer })
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-// sample frontend
-app.use(express.static("./src/public/"));
+// deploy frontend
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+app.use(express.static("./frontend/build"));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+})
 
 const { signUp, signIn, newEvent, addFriend, invite,
   getAvailableTimeSlots, updateAvailableTimeSlots, getMyAvailableTimeSlots,
@@ -47,6 +53,6 @@ wsServer.on("connection", (client) => {
   })
 })
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is listening on port ${PORT}.`);
 });
