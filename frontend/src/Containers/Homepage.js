@@ -148,8 +148,9 @@ const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, s
                         visible={eventModalVisible}
                         onCreate={(value) => {                           
                             console.log(value);
-                            let today = new Date();
-                            if(new Date(value.date_range[0]).getTime() < today.getTime()){
+                            let yesterday = new Date();
+                            yesterday.setDate(yesterday.getDate() - 1);
+                            if(new Date(value.date_range[0]).getTime() < yesterday.getTime()){
                                 displayStatus({
                                     type: "error",
                                     msg: "日期無效，請選擇今天以後的日期！",
@@ -158,6 +159,7 @@ const Homepage = ({account, nickname, friends, events, setSignedIn,setFriends, s
                             else{
                                 if(value.description === undefined) { value.description = ""; }
 
+                                if (value.participants === undefined) value.participants = [];
                                 value.participants.push(account);
 
                                 server.send(JSON.stringify({
