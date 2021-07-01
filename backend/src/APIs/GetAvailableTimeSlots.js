@@ -3,6 +3,8 @@ import { parseTimeSlots } from "./myUtil";
 import responses from "./commonFailedResponses";
 const { missingFieldsResponse, eventNotExistResponse,
         accountNotExistResponse, notInvitedResponse } = responses
+import AsyncLock from 'async-lock';
+const lock = new AsyncLock();
 
 const getAvailableTimeSlots = async (args) => {
   console.log('GetAvailableTimeSlots called.');
@@ -36,14 +38,18 @@ const getAvailableTimeSlots = async (args) => {
   //    return ret
   const ret = [];
   const dateStrings = getAllDateStringsInRange(startDate, endDate);
-  for (const date of dateStrings) {
-    const timeSlotsOnDate = await db.TimeSlotModel.find({date: date, event: eventId});
-    const parsedTimeSlotsOnDate = await parseTimeSlots(timeSlotsOnDate);
-    if (parsedTimeSlotsOnDate.length > 0) {
-      parsedTimeSlotsOnDate.forEach((obj) => { obj.date = date });
-      ret.push(...parsedTimeSlotsOnDate);
+  await lock.acquire('timeSlotsDBLock', async () => {
+    for (const date of dateStrings) {
+      const timeSlotsOnDate = await db.TimeSlotModel.find({date: date, event: eventId});
+      const parsedTimeSlotsOnDate = await parseTimeSlots(timeSlotsOnDate);
+      if (parsedTimeSlotsOnDate.length > 0) {
+        parsedTimeSlotsOnDate.forEach((obj) => {
+          obj.date = date
+        });
+        ret.push(...parsedTimeSlotsOnDate);
+      }
     }
-  }
+  })
 
   return getAvailableTimeSlotsSuccessResponse(ret);
 }
