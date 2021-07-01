@@ -95,8 +95,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
   const [unavailableParticipants, setUnavailableParticipants] = useState([]);                                 
   const [friendModalVisible, setFriendModalVisible] = useState(false);               //for invite()
   const [editMode, setEditMode] = useState();
-  //planB:const [editMode, setEditMode] = useState(true);
-  const [saved, setSaved] = useState(false);                                          //onClick save or not
+  const [saved, setSaved] = useState();                                             //onClick save or not; setSaved(array.length)
 
   const addParticipant = () => setFriendModalVisible(true); 
   const closeEvent = () => setEnterEvent(false);                                     //back to Homepage
@@ -132,12 +131,10 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         eventId: id,
       }
     }));
-    setSaved(false)
   }
 
   const turnViewMode = () => {
-    if(saved !== true){
-      setSaved(false);
+    if(myTimeSlots.length !== saved){
       displayStatus({
         type: "error",
         msg: "切換模式前請先儲存！",
@@ -159,6 +156,19 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
   }
 
   const updateTimeSlot = () => {
+    console.log("myTimeSlots: ")
+    console.log(myTimeSlots);
+    //kick out duplicate element
+    let arr = myTimeSlots;
+    for (let i = 0; i < myTimeSlots.length; i++){
+      for (let j = i+1; j < myTimeSlots.length; j++){
+        if(myTimeSlots[i].getTime() === myTimeSlots[j].getTime())
+          arr.splice(j,1);
+      }
+    }
+    setMyTimeSlots(arr);
+    console.log(myTimeSlots);
+
     //UpdateAvailableTimeSlots()
     let availableTime = []                                                //{date, startTime, endTime}
     myTimeSlots.map((timeSlot) => {
@@ -177,7 +187,7 @@ const EventPage = ({setEnterEvent, account, title, description, startDate, endDa
         availableTimeSlots: availableTime,
       }
     }));
-    setSaved(true);
+    setSaved(myTimeSlots.length);
   }
 
   //for ScheduleSelector numDays
