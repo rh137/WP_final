@@ -2,7 +2,7 @@ import util from 'util';
 import _ from 'lodash';
 import db from "../db";
 const logDeep = (obj) => { console.log(util.inspect(obj, false, null, true)); return;}
-
+/*
 const timeSlots = [
   { account: "user1", startTime: 7, endTime: 9 },
   { account: "user2", startTime: 8, endTime: 10 },
@@ -12,6 +12,7 @@ const expectedOutput = [
   { startTime: 8, endTime: 9,  availableParticipants: [ { account: "user1" }, { account: "user2" } ] },
   { startTime: 9, endTime: 10, availableParticipants: [ { account: "user2" } ] }
 ]
+ */
 async function parseTimeSlots (timeSlots) {
   const splitTimeSlots = await split(timeSlots);
   splitTimeSlots.sort(compareTimeSlots);
@@ -61,13 +62,14 @@ async function parseTimeSlots (timeSlots) {
 const timeSlots = [
   { account: "user1", startTime: 7, endTime: 9 },
   { account: "user2", startTime: 8, endTime: 10 },
-] */
+]
 const expectedSplitTimeSlots = [
   { account: "user1", time: 7, type: "START" },
   { account: "user1", time: 9, type: "END" },
   { account: "user2", time: 8, type: "START" },
   { account: "user2", time: 10, type: "END" }
 ]
+ */
 async function split (timeSlots) {
   const splitTimeSlots = []
   for (const ts of timeSlots) {
@@ -77,7 +79,6 @@ async function split (timeSlots) {
         account: user.account,
         nickname: user.nickname
       },
-      // account: ts.account,
       time: ts.startTime,
       type: "START"
     }, {
@@ -85,7 +86,6 @@ async function split (timeSlots) {
         account: user.account,
         nickname: user.nickname
       },
-      // account: ts.account,
       time: ts.endTime,
       type: "END"
     });
@@ -106,16 +106,5 @@ function compareTimeSlots(ts1, ts2) {
 }
 
 
-function main () {
-  let o1 = parseTimeSlots(timeSlots);
-  let o2 = expectedOutput;
-
-  logDeep(o1)
-  logDeep(o2)
-
-  console.log(_.isEqual(o1, o2));
-}
-
-//main();
 
 export { parseTimeSlots };
